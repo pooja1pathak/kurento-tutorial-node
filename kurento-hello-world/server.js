@@ -193,13 +193,9 @@ function start(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		
-		pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, RecorderEndpoint) {
-        		if (error) {
-            		return callback(error);
-        	}
-
-       		 return callback(null, webRtcEndpoint);
-    		});
+		pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, recorder) {
+        		if(error) return onError(error);
+        	
 
                 if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -209,11 +205,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                 }
 		    
 		RecorderEndpoint.connect(RecorderEndpoint, function(error) {
-        		if (error) {
-            		return callback(error);
-        	}
-       		 return callback(null);
-    		});
+        		if(error) return onError(error);
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -250,6 +242,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+		});
+		});
                   });
                 });
             });
