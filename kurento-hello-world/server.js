@@ -280,7 +280,7 @@ function connectMediaElements(webRtcEndpoint, callback) {
 }
 
 function connectRecorderElements(RecorderEndpoint, callback) {
-    webRtcEndpoint.connect(RecorderEndpoint, function(error) {
+    WebRtcEndpoint.connect(RecorderEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
