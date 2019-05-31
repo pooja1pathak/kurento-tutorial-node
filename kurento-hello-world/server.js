@@ -179,7 +179,7 @@ function start(sessionId, ws, sdpOffer, callback) {
             if (error) {
                 return callback(error);
             } 
-	 p = pipeline
+	 var p = pipeline
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
