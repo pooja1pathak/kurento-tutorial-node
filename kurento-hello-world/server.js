@@ -25,6 +25,7 @@ var ws = require('ws');
 var kurento = require('kurento-client');
 var fs    = require('fs');
 var https = require('https');
+var p;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -179,7 +180,7 @@ function start(sessionId, ws, sdpOffer, callback) {
             if (error) {
                 return callback(error);
             } 
-	 var p = pipeline
+	 p = pipeline
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
