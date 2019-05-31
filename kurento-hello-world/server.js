@@ -250,6 +250,7 @@ function start(sessionId, ws, sdpOffer, callback) {
             });
         });
     });
+});
 }
 
 function createMediaElements(pipeline, ws, callback) {
