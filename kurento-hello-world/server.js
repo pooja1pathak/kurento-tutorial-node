@@ -193,7 +193,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		
-		pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, recorder) {
+		pipeline.create("RecorderEndpoint", {uri: argv.file_uri}, function(error, recorder) {
         		if(error) return onError(error);
 		    
 		RecorderEndpoint.connect(RecorderEndpoint, function(error) {
