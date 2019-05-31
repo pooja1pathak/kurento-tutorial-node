@@ -188,11 +188,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                     return callback(error);
                 }
 		
-		//createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
-                //if (error) {
-                    //pipeline.release();
-                    //return callback(error);
-                //}
+		createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                if (error) {
+                    pipeline.release();
+                    return callback(error);
+                }
 
                 if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -200,14 +200,19 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
+		connectRecorderElements(RecorderEndpoint, function(error) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
 		
 		//pipeline.create("RecorderEndpoint", {uri: argv.file_uri}, function(error, recorder) {
         		//if(error) return onError(error);
 		    
 		//RecorderEndpoint.connect(RecorderEndpoint, function(error) {
         		//if(error) return onError(error);
-		var recorder = yield pipeline.create('RecorderEndpoint', {uri: argsv.file_uri});
-		yield webRtcEndpoint.connect(recorder);
+		//var recorder = yield pipeline.create('RecorderEndpoint', {uri: argsv.file_uri});
+		//yield webRtcEndpoint.connect(recorder);
 		yield recorder.record();
 
                 connectMediaElements(webRtcEndpoint, function(error) {
@@ -245,8 +250,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
-		//});
-		//});
+		});
+		});
                   });
                 });
             });
@@ -254,16 +259,6 @@ function start(sessionId, ws, sdpOffer, callback) {
     }
 
 function createMediaElements(pipeline, ws, callback) {
-    pipeline.create('WebRtcEndpoint', {uri: argsv.file_uri} function(error, webRtcEndpoint) {
-        if (error) {
-            return callback(error);
-        }
-
-        return callback(null, webRtcEndpoint);
-    });
-}
-
-function createRecorderElements(pipeline, uri, callback) {
     pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
         if (error) {
             return callback(error);
@@ -273,8 +268,27 @@ function createRecorderElements(pipeline, uri, callback) {
     });
 }
 
+function createRecorderElements(pipeline, ws, callback) {
+    pipeline.create('RecorderEndpoint', {uri: argsv.file_uri}, function(error, RecorderEndpoint) {
+        if (error) {
+            return callback(error);
+        }
+
+        return callback(null, RecorderEndpoint);
+    });
+}
+
 function connectMediaElements(webRtcEndpoint, callback) {
     webRtcEndpoint.connect(webRtcEndpoint, function(error) {
+        if (error) {
+            return callback(error);
+        }
+        return callback(null);
+    });
+}
+
+function connectRecorderElements(RecorderEndpoint, callback) {
+    RecorderEndpoint.connect(RecorderEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
