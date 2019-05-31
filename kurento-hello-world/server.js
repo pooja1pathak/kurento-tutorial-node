@@ -216,7 +216,7 @@ function start(sessionId, ws, sdpOffer, callback) {
         		//if(error) return onError(error);
 		//var recorder = yield pipeline.create('RecorderEndpoint', {uri: argsv.file_uri});
 		//yield webRtcEndpoint.connect(recorder);
-		yield recorder.record();
+		//yield recorder.record();
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
