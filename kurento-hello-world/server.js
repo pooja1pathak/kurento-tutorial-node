@@ -200,7 +200,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-		connectRecorderElements(RecorderEndpoint, function(error) {
+		connectRecorderElements(RecorderEndpoint, webRtcEndpoint, function(error) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
@@ -279,8 +279,8 @@ function connectMediaElements(webRtcEndpoint, callback) {
     });
 }
 
-function connectRecorderElements(RecorderEndpoint, callback) {
-    WebRtcEndpoint.connect(RecorderEndpoint, function(error) {
+function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
+    webRtcEndpoint.connect(RecorderEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
