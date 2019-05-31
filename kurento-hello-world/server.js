@@ -192,6 +192,25 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
+		   
+		createMediaElements(pipeline, ws, {uri: args.file_uri}, function(error, RecorderEndpoint) {
+                	if (error) {
+                    pipeline.release();
+                    return callback(error);
+                }
+
+                if (candidatesQueue[sessionId]) {
+                    while(candidatesQueue[sessionId].length) {
+                        var candidate = candidatesQueue[sessionId].shift();
+                        RecorderEndpoint.addIceCandidate(candidate);
+                    }
+                }
+		connectMediaElements(RecorderEndpoint, function(error, recorder) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+		recorder.record();
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -207,17 +226,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }));
                     });
                     
-            	   pipeline.create("RecorderEndpoint", {uri: args.file_uri}, function(error, recorder){
-  				if(error) return onError(error);
-		   
-		   recorder.connect(webRtcEndpoint, function(error){
-						  if(error) return onError(error);
-						  console.log("RecorderEndpoint-->WebRtcEndpoint connection established");
-						  recorder.record(function(error){
-							  if(error) return onError(error);
-							  console.log("Recorder recording ...");
-						});
-					  });
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
