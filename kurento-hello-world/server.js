@@ -193,11 +193,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		
-		#pipeline.create("RecorderEndpoint", {uri: argv.file_uri}, function(error, recorder) {
-        		#if(error) return onError(error);
+		//pipeline.create("RecorderEndpoint", {uri: argv.file_uri}, function(error, recorder) {
+        		//if(error) return onError(error);
 		    
-		#RecorderEndpoint.connect(RecorderEndpoint, function(error) {
-        		#if(error) return onError(error);
+		//RecorderEndpoint.connect(RecorderEndpoint, function(error) {
+        		//if(error) return onError(error);
 		var recorder = yield pipeline.create('RecorderEndpoint', {uri: args.file_uri});
 		yield webRtcEndpoint.connect(recorder);
 		yield recorder.record();
@@ -237,8 +237,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
-		#});
-		#});
+		//});
+		//});
                   });
                 });
             });
