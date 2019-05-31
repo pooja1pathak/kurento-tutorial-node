@@ -193,7 +193,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		   
-		createMediaElements(pipeline, ws, {uri: args.file_uri}, function(error, RecorderEndpoint) {
+		createMediaElements(pipeline, ws, {uri: argv.file_uri}, function(error, RecorderEndpoint) {
                 	if (error) {
                     pipeline.release();
                     return callback(error);
