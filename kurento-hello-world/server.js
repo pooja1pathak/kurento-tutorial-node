@@ -187,6 +187,12 @@ function start(sessionId, ws, sdpOffer, callback) {
                     pipeline.release();
                     return callback(error);
                 }
+		
+		//createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                //if (error) {
+                    //pipeline.release();
+                    //return callback(error);
+                //}
 
                 if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -200,7 +206,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 		    
 		//RecorderEndpoint.connect(RecorderEndpoint, function(error) {
         		//if(error) return onError(error);
-		var recorder = yield pipeline.create('RecorderEndpoint', {uri: args.file_uri});
+		var recorder = yield pipeline.create('RecorderEndpoint', {uri: argsv.file_uri});
 		yield webRtcEndpoint.connect(recorder);
 		yield recorder.record();
 
@@ -248,6 +254,16 @@ function start(sessionId, ws, sdpOffer, callback) {
     }
 
 function createMediaElements(pipeline, ws, callback) {
+    pipeline.create('WebRtcEndpoint', {uri: argsv.file_uri} function(error, webRtcEndpoint) {
+        if (error) {
+            return callback(error);
+        }
+
+        return callback(null, webRtcEndpoint);
+    });
+}
+
+function createRecorderElements(pipeline, uri, callback) {
     pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
         if (error) {
             return callback(error);
