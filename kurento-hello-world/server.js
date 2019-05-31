@@ -195,14 +195,6 @@ function start(sessionId, ws, sdpOffer, callback) {
 		
 		pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, recorder) {
         		if(error) return onError(error);
-        	
-
-                if (candidatesQueue[sessionId]) {
-                    while(candidatesQueue[sessionId].length) {
-                        var candidate = candidatesQueue[sessionId].shift();
-                        RecorderEndpoint.addIceCandidate(candidate);
-                    }
-                }
 		    
 		RecorderEndpoint.connect(RecorderEndpoint, function(error) {
         		if(error) return onError(error);
