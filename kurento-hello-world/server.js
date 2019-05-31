@@ -205,6 +205,9 @@ function start(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
+		RecorderEndpoint.record(function(error){
+				if(error) return onError(error);
+				console.log("Recorder recording ...");
 		
 		//pipeline.create("RecorderEndpoint", {uri: argv.file_uri}, function(error, recorder) {
         		//if(error) return onError(error);
@@ -228,9 +231,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
-                    
-
-			recorder.record();
 			
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
@@ -254,6 +254,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 		});
                   });
                 });
+		    });
             });
         });
     }
