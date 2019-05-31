@@ -192,12 +192,14 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-		   
-		createMediaElements(pipeline, ws, {uri: argv.file_uri}, function(error, RecorderEndpoint) {
-                	if (error) {
-                    pipeline.release();
-                    return callback(error);
-                }
+		
+		pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, RecorderEndpoint) {
+        		if (error) {
+            		return callback(error);
+        	}
+
+       		 return callback(null, webRtcEndpoint);
+    		});
 
                 if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -205,12 +207,13 @@ function start(sessionId, ws, sdpOffer, callback) {
                         RecorderEndpoint.addIceCandidate(candidate);
                     }
                 }
-		connectMediaElements(RecorderEndpoint, function(error, recorder) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
-		recorder.record();
+		    
+		RecorderEndpoint.connect(RecorderEndpoint, function(error) {
+        		if (error) {
+            		return callback(error);
+        	}
+       		 return callback(null);
+    		});
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -227,6 +230,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                     });
                     
 
+			recorder.record();
+			
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             pipeline.release();
@@ -249,9 +254,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                 });
             });
         });
-    });
-});
-}
+    }
 
 function createMediaElements(pipeline, ws, callback) {
     pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
