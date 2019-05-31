@@ -25,7 +25,7 @@ var ws = require('ws');
 var kurento = require('kurento-client');
 var fs    = require('fs');
 var https = require('https');
-var p;
+var pipeline;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -176,11 +176,11 @@ function start(sessionId, ws, sdpOffer, callback) {
             return callback(error);
         }
 
-        kurentoClient.create('MediaPipeline', function(error, pipeline) {
+        kurentoClient.create('MediaPipeline', function(error, p) {
             if (error) {
                 return callback(error);
             } 
-	 p = pipeline
+	 pipeline = p
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
@@ -200,7 +200,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 		    
 		//RecorderEndpoint.connect(RecorderEndpoint, function(error) {
         		//if(error) return onError(error);
-		var recorder = yield p.create('RecorderEndpoint', {uri: args.file_uri});
+		var recorder = yield pipeline.create('RecorderEndpoint', {uri: args.file_uri});
 		yield webRtcEndpoint.connect(recorder);
 		yield recorder.record();
 
