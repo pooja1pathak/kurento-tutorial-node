@@ -205,6 +205,18 @@ function start(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
+                    
+            pipeline.create("RecorderEndpoint", {uri: args.file_uri}, function(error, recorder){
+  				if(error) return onError(error);
+                
+                recorder.connect(webRtcEndpoint, function(error){
+						  if(error) return onError(error);
+						  console.log("RecorderEndpoint-->WebRtcEndpoint connection established");
+						  recorder.record(function(error){
+							  if(error) return onError(error);
+							  console.log("Recorder recording ...");
+						});
+					  });
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
@@ -224,6 +236,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+                  });
                 });
             });
         });
