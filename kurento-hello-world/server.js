@@ -270,7 +270,7 @@ function createMediaElements(pipeline, ws, callback) {
 }
 
 function createRecorderElements(pipeline, ws, callback) {
-    pipeline.create('RecorderEndpoint', {uri: argsv.file_uri}, function(error, RecorderEndpoint) {
+    pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
         }
