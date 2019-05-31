@@ -29,7 +29,8 @@ var https = require('https');
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8443/',
-        ws_uri: 'ws://localhost:8888/kurento'
+        ws_uri: 'ws://localhost:8888/kurento',
+	file_uri: 'file:///tmp/kurento-hello-world-recording.webm',
     }
 });
 
@@ -206,10 +207,10 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }));
                     });
                     
-            pipeline.create("RecorderEndpoint", {uri: args.file_uri}, function(error, recorder){
+            	   pipeline.create("RecorderEndpoint", {uri: args.file_uri}, function(error, recorder){
   				if(error) return onError(error);
-                
-                recorder.connect(webRtcEndpoint, function(error){
+		   
+		   recorder.connect(webRtcEndpoint, function(error){
 						  if(error) return onError(error);
 						  console.log("RecorderEndpoint-->WebRtcEndpoint connection established");
 						  recorder.record(function(error){
