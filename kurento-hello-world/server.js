@@ -237,8 +237,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
-		});
-		});
+		#});
+		#});
                   });
                 });
             });
