@@ -50,6 +50,9 @@ ws.onmessage = function(message) {
 		if (state == I_AM_STARTING) {
 			setState(I_CAN_START);
 		}
+		if (state == I_AM_PLAYING) {
+			setState(I_CAN_START);
+		}
 		onError('Error message from server: ' + parsedMessage.message);
 		break;
 	case 'iceCandidate':
@@ -57,6 +60,9 @@ ws.onmessage = function(message) {
 		break;
 	default:
 		if (state == I_AM_STARTING) {
+			setState(I_CAN_START);
+		}
+		if (state == I_AM_PLAYING) {
 			setState(I_CAN_START);
 		}
 		onError('Unrecognized message', parsedMessage);
@@ -87,7 +93,7 @@ function start() {
 function play() {
 	console.log('Playing recorded video ...')
 
-	// Disable start button
+	// Disable play button
 	setState(I_AM_PLAYING);
 	showSpinner(videoOutput);
 
