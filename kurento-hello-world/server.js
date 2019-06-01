@@ -364,7 +364,7 @@ function createRecorderElements(pipeline, ws, callback) {
     });
 }
 	
-function createRecorderElements(pipeline, ws, callback) {
+function createPlayerElements(pipeline, ws, callback) {
     pipeline.create('PlayerEndpoint', {uri: argv.file_uri}, function(error, PlayerEndpoint) {
         if (error) {
             return callback(error);
