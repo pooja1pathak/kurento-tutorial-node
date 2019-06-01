@@ -83,6 +83,27 @@ function start() {
     });
 }
 
+function play() {
+	console.log('Playing recorded video ...')
+
+	// Disable start button
+	setState(I_AM_STARTING);
+	showSpinner(videoOutput);
+
+	console.log('Creating WebRtcPeer and generating local sdp offer ...');
+
+    var options = {
+      localVideo: videoInput,
+      remoteVideo: videoOutput,
+      onicecandidate : onIceCandidate
+    }
+
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        if(error) return onError(error);
+        this.generateOffer(onPlayOffer);
+    });
+}
+
 function onIceCandidate(candidate) {
 	   console.log('Local candidate' + JSON.stringify(candidate));
 
@@ -99,6 +120,17 @@ function onOffer(error, offerSdp) {
 	console.info('Invoking SDP offer callback function ' + location.host);
 	var message = {
 		id : 'start',
+		sdpOffer : offerSdp
+	}
+	sendMessage(message);
+}
+
+function onPlayOffer(error, offerSdp) {
+	if(error) return onError(error);
+
+	console.info('Invoking SDP offer callback function ' + location.host);
+	var message = {
+		id : 'play',
 		sdpOffer : offerSdp
 	}
 	sendMessage(message);
