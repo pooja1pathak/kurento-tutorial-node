@@ -25,7 +25,7 @@ const I_CAN_START = 0;
 const I_CAN_STOP = 1;
 const I_AM_STARTING = 2;
 const I_AM_PLAYING = 3;
-const I_CAN_PLAY = 0;
+const I_CAN_PLAY = 4;
 
 
 window.onload = function() {
@@ -170,12 +170,14 @@ function setState(nextState) {
 		$('#start').attr('disabled', false);
 		$('#start').attr('onclick', 'start()');
 		$('#stop').attr('disabled', true);
+		$('#play').attr('disabled', false);
 		$('#stop').removeAttr('onclick');
 		break;
 
 	case I_CAN_STOP:
 		$('#start').attr('disabled', true);
 		$('#stop').attr('disabled', false);
+		$('#play').attr('disabled', true);
 		$('#stop').attr('onclick', 'stop()');
 		break;
 
@@ -183,13 +185,15 @@ function setState(nextState) {
 		$('#start').attr('disabled', true);
 		$('#start').removeAttr('onclick');
 		$('#stop').attr('disabled', true);
+		$('#play').attr('disabled', false);
 		$('#stop').removeAttr('onclick');
 		break;
 			
 	case I_AM_PLAYING:
 		$('#play').attr('disabled', true);
 		$('#play').removeAttr('onclick');
-		$('#stop').attr('disabled', true);
+		$('#stop').attr('disabled', false);
+		$('#start').attr('disabled', true);
 		$('#stop').removeAttr('onclick');
 		break;
 		
