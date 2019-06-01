@@ -122,6 +122,22 @@ wss.on('connection', function(ws) {
                 }));
             });
             break;
+			
+	case 'play':
+            sessionId = request.session.id;
+            play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                if (error) {
+                    return ws.send(JSON.stringify({
+                        id : 'error',
+                        message : error
+                    }));
+                }
+                ws.send(JSON.stringify({
+                    id : 'startResponse',
+                    sdpAnswer : sdpAnswer
+                }));
+            });
+            break;
 
         case 'stop':
             stop(sessionId);
@@ -237,6 +253,72 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }
                     });
                   });
+                });
+            });
+        });
+    });
+}
+
+function play(sessionId, ws, sdpOffer, callback) {
+    if (!sessionId) {
+        return callback('Cannot use undefined sessionId');
+    }
+
+    getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+
+        kurentoClient.create('MediaPipeline', function(error, pipeline) {
+            if (error) {
+                return callback(error);
+            }
+
+            createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
+                if (error) {
+                    pipeline.release();
+                    return callback(error);
+                }
+
+                if (candidatesQueue[sessionId]) {
+                    while(candidatesQueue[sessionId].length) {
+                        var candidate = candidatesQueue[sessionId].shift();
+                        webRtcEndpoint.addIceCandidate(candidate);
+                    }
+                }
+
+                connectMediaElements(webRtcEndpoint, function(error) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+
+                    webRtcEndpoint.on('OnIceCandidate', function(event) {
+                        var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                        ws.send(JSON.stringify({
+                            id : 'iceCandidate',
+                            candidate : candidate
+                        }));
+                    });
+
+                    webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                        if (error) {
+                            pipeline.release();
+                            return callback(error);
+                        }
+
+                        sessions[sessionId] = {
+                            'pipeline' : pipeline,
+                            'webRtcEndpoint' : webRtcEndpoint
+                        }
+                        return callback(null, sdpAnswer);
+                    });
+
+                    webRtcEndpoint.gatherCandidates(function(error) {
+                        if (error) {
+                            return callback(error);
+                        }
+                    });
                 });
             });
         });
