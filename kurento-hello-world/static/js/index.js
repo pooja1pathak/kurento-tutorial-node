@@ -24,6 +24,9 @@ var state = null;
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
 const I_AM_STARTING = 2;
+const I_AM_PLAYING = 3;
+const I_CAN_PLAY = 0;
+
 
 window.onload = function() {
 	console = new Console();
@@ -87,7 +90,7 @@ function play() {
 	console.log('Playing recorded video ...')
 
 	// Disable start button
-	setState(I_AM_STARTING);
+	setState(I_AM_PLAYING);
 	showSpinner(videoOutput);
 
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
@@ -179,6 +182,20 @@ function setState(nextState) {
 	case I_AM_STARTING:
 		$('#start').attr('disabled', true);
 		$('#start').removeAttr('onclick');
+		$('#stop').attr('disabled', true);
+		$('#stop').removeAttr('onclick');
+		break;
+			
+	case I_AM_PLAYING:
+		$('#play').attr('disabled', true);
+		$('#play').removeAttr('onclick');
+		$('#stop').attr('disabled', true);
+		$('#stop').removeAttr('onclick');
+		break;
+		
+	case I_CAN_PLAY:
+		$('#play').attr('disabled', false);
+		$('#play').attr('onclick', 'play()');
 		$('#stop').attr('disabled', true);
 		$('#stop').removeAttr('onclick');
 		break;
