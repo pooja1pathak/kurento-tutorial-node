@@ -305,7 +305,8 @@ function play(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
-		//PlayerEndpoint.on('EndOfStream', stop);
+		PlayerEndpoint.on('EndOfStream', stop);
+		
 		PlayerEndpoint.play(function(error){
 							  if(error) return onError(error);
 							  console.log("Player playing recorded video ...");
