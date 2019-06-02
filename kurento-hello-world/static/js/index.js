@@ -100,12 +100,11 @@ function play() {
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
-      localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
     }
 
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onPlayOffer);
     });
