@@ -311,11 +311,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                         return callback(error);
                     }
 			
-		PlayerEndpoint.play(function(error2){
-			if(error) return onError(error2);
-			console.log("Player playing recorded video ...");
-		});
-			
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         ws.send(JSON.stringify({
@@ -338,6 +333,11 @@ function play(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+			
+		PlayerEndpoint.play(function(error){
+			if(error) return onError(error);
+			console.log("Player playing recorded video ...");
+		});
 		     
                 });
             });
