@@ -397,10 +397,17 @@ function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
         if (error) {
             return callback(error);
         }
-	PlayerEndpoint.play(function(error){
-			if(error) return onError(error);
-			console.log("Player playing recorded video ...");
-	});
+	//PlayerEndpoint.play(function(error){
+			//if(error) return onError(error);
+			//console.log("Player playing recorded video ...");
+	//});
+	console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+
+  	PlayerEndpoint.play(function(error){
+  		if(error) return onError(error);
+
+  		console.log("Player playing ...");
+  	});
         return callback(null);
     });
 }
