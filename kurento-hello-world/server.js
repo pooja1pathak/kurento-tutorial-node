@@ -299,18 +299,15 @@ function play(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
+		  
+		PlayerEndpoint.on('EndOfStream', stop);
 		     
 		connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
                     }
-		PlayerEndpoint.on('EndOfStream', stop);
 		
-		PlayerEndpoint.play(function(error){
-							  if(error) return onError(error);
-							  console.log("Player playing recorded video ...");
-						});
 
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
@@ -319,6 +316,11 @@ function play(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
+			
+		PlayerEndpoint.play(function(error){
+							  if(error) return onError(error);
+							  console.log("Player playing recorded video ...");
+						});
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
