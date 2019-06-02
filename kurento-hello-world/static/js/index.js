@@ -25,6 +25,7 @@ const I_CAN_START = 0;
 const I_CAN_STOP = 1;
 const I_AM_STARTING = 2;
 const I_AM_PLAYING = 3;
+const IN_PLAY = 4;
 
 window.onload = function() {
 	console = new Console();
@@ -45,6 +46,9 @@ ws.onmessage = function(message) {
 	switch (parsedMessage.id) {
 	case 'startResponse':
 		startResponse(parsedMessage);
+		break;
+	case 'playResponse':
+		playResponse(parsedMessage);
 		break;
 	case 'error':
 		if (state == I_AM_STARTING) {
@@ -153,6 +157,12 @@ function startResponse(message) {
 	webRtcPeer.processAnswer(message.sdpAnswer);
 }
 
+function playResponse(message) {
+	setState(IN_PLAY);
+	console.log('SDP answer received from server. Processing ...');
+	webRtcPeer.processAnswer(message.sdpAnswer);
+}
+
 function stop() {
 	console.log('Stopping video call ...');
 	setState(I_CAN_START);
@@ -200,6 +210,11 @@ function setState(nextState) {
 		$('#stop').attr('disabled', false);
 		$('#start').attr('disabled', true);
 		$('#stop').removeAttr('onclick');
+		break;
+	case IN_PLAY:
+		$('#play').attr('disabled', true);
+		$('#stop').attr('disabled', false);
+		$('#start').attr('disabled', true);
 		break;
 
 	default:
