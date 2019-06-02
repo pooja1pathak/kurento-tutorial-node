@@ -301,12 +301,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                 }
 		  
 		PlayerEndpoint.on('EndOfStream', stop);
-		     
-		connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
 		
 
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
@@ -317,10 +311,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }));
                     });
 			
-		PlayerEndpoint.play(function(error){
-							  if(error) return onError(error);
-							  console.log("Player playing recorded video ...");
-						});
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
@@ -340,6 +330,13 @@ function play(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+		     
+		   connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+		     
                 });
             });
         });
@@ -400,6 +397,10 @@ function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
         if (error) {
             return callback(error);
         }
+	PlayerEndpoint.play(function(error){
+			if(error) return onError(error);
+			console.log("Player playing recorded video ...");
+	});
         return callback(null);
     });
 }
