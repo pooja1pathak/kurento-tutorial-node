@@ -285,6 +285,12 @@ function play(sessionId, ws, sdpOffer, callback) {
             }
 		
 	    console.log("MediaPipeline created")
+		
+	createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
+                if (error) {
+                    pipeline.release();
+                    return callback(error);
+                }
 
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
@@ -292,16 +298,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                     pipeline.release();
                     return callback(error);
                 }
-	    console.log("webRtcEndpoint created")
-	     
-		    
-	     createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                if (error) {
-                    pipeline.release();
-                    return callback(error);
-                }
-		     
-		console.log("PlayerEndpoint created")
 
 
                 if (candidatesQueue[sessionId]) {
@@ -344,18 +340,12 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }
                         return callback(null, sdpAnswer);
                     });
-		     
-		   console.log("processOffer complete")
 
                     webRtcEndpoint.gatherCandidates(function(error) {
                         if (error) {
                             return callback(error);
                         }
                     });
-		     
-		   console.log("gatherCandidates complete")
-		     
-		   
 		     
                 });
             });
