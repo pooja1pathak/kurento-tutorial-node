@@ -135,7 +135,7 @@ wss.on('connection', function(ws) {
                     }));
                 }
                 ws.send(JSON.stringify({
-                    id : 'startResponse',
+                    id : 'playResponse',
                     sdpAnswer : sdpAnswer
                 }));
             });
@@ -318,7 +318,10 @@ function play(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
-			
+		PlayerEndpoint.play(function(error){
+			if(error) return onError(error);
+			console.log("Player playing recorded video ...");
+		});
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
@@ -327,17 +330,13 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }
                         return callback(null, sdpAnswer);
                     });
+		
 
                     webRtcEndpoint.gatherCandidates(function(error) {
                         if (error) {
                             return callback(error);
                         }
                     });
-			
-		PlayerEndpoint.play(function(error){
-			if(error) return onError(error);
-			console.log("Player playing recorded video ...");
-		});
 		     
                 });
             });
