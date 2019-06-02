@@ -307,11 +307,7 @@ function play(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		  
-		//PlayerEndpoint.on('EndOfStream', stop);
-		     
-		PlayerEndpoint.on('EndOfStream', function(event){
-              		pipeline.release();
-            	});
+		PlayerEndpoint.on('EndOfStream', stop);
 		
 		connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
                     if (error) {
@@ -332,11 +328,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                         if (error) {
                             pipeline.release();
                             return callback(error);
-                        }
-
-                        sessions[sessionId] = {
-                            'pipeline' : pipeline,
-                            'webRtcEndpoint' : webRtcEndpoint
                         }
                         return callback(null, sdpAnswer);
                     });
@@ -403,13 +394,12 @@ function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
 }
 	
 function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
-	console.log("In connectPlayerElements")
     webRtcEndpoint.connect(PlayerEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
-	PlayerEndpoint.play(function(error){
-			if(error) return callback(error);
+	PlayerEndpoint.play(function(error2){
+			if(error) return onError(error2);
 			console.log("Player playing recorded video ...");
 		});
         return callback(null);
