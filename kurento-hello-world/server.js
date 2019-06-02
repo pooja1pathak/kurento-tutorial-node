@@ -267,6 +267,8 @@ function start(sessionId, ws, sdpOffer, callback) {
     }
 
 function play(sessionId, ws, sdpOffer, callback) {
+	
+    console.log("In method play")
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
     }
@@ -275,23 +277,32 @@ function play(sessionId, ws, sdpOffer, callback) {
         if (error) {
             return callback(error);
         }
+	 
 
         kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error) {
                 return callback(error);
             }
+		
+	    console.log("MediaPipeline created")
+
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
                     pipeline.release();
                     return callback(error);
                 }
+	    console.log("webRtcEndpoint created")
+	     
 		    
 	     createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
                 if (error) {
                     pipeline.release();
                     return callback(error);
                 }
+		     
+		console.log("PlayerEndpoint created")
+
 
                 if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -324,12 +335,16 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }
                         return callback(null, sdpAnswer);
                     });
+		     
+		   console.log("processOffer complete")
 
                     webRtcEndpoint.gatherCandidates(function(error) {
                         if (error) {
                             return callback(error);
                         }
                     });
+		     
+		   console.log("gatherCandidates complete")
 		     
 		   connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
                     if (error) {
@@ -393,6 +408,7 @@ function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
 }
 	
 function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
+	console.log("In connectPlayerElements")
     webRtcEndpoint.connect(PlayerEndpoint, function(error) {
         if (error) {
             return callback(error);
