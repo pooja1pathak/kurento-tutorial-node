@@ -283,28 +283,24 @@ function play(sessionId, ws, sdpOffer, callback) {
             if (error) {
                 return callback(error);
             }
-		
-	    console.log("MediaPipeline created")
-		
-	createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                if (error) {
-                    pipeline.release();
-                    return callback(error);
-                }
-
-
+	
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
                     pipeline.release();
                     return callback(error);
                 }
-
-
-                if (candidatesQueue[sessionId]) {
+		   
+	    if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
                         var candidate = candidatesQueue[sessionId].shift();
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
+                }
+		    
+	    createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
+                if (error) {
+                    pipeline.release();
+                    return callback(error);
                 }
 		  
 		PlayerEndpoint.on('EndOfStream', stop);
@@ -314,6 +310,11 @@ function play(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
+			
+		PlayerEndpoint.play(function(error2){
+			if(error) return onError(error2);
+			console.log("Player playing recorded video ...");
+		});
 			
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
@@ -394,14 +395,10 @@ function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
 }
 	
 function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
-    webRtcEndpoint.connect(PlayerEndpoint, function(error) {
+    PlayerEndpoint.connect(webRtcEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
-	PlayerEndpoint.play(function(error2){
-			if(error) return onError(error2);
-			console.log("Player playing recorded video ...");
-		});
         return callback(null);
     });
 }
