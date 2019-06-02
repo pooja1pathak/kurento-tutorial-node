@@ -311,9 +311,18 @@ function play(sessionId, ws, sdpOffer, callback) {
                     }
                 }
 		  
-		PlayerEndpoint.on('EndOfStream', stop);
+		//PlayerEndpoint.on('EndOfStream', stop);
+		     
+		PlayerEndpoint.on('EndOfStream', function(event){
+              		pipeline.release();
+            	});
 		
-
+		connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+			
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         ws.send(JSON.stringify({
@@ -346,11 +355,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 		     
 		   console.log("gatherCandidates complete")
 		     
-		   connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
+		   
 		     
                 });
             });
@@ -413,17 +418,10 @@ function connectPlayerElements(PlayerEndpoint, webRtcEndpoint, callback) {
         if (error) {
             return callback(error);
         }
-	//PlayerEndpoint.play(function(error){
-			//if(error) return onError(error);
-			//console.log("Player playing recorded video ...");
-	//});
-	console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-
-  	PlayerEndpoint.play(function(error){
-  		if(error) return onError(error);
-
-  		console.log("Player playing ...");
-  	});
+	PlayerEndpoint.play(function(error){
+			if(error) return callback(error);
+			console.log("Player playing recorded video ...");
+		});
         return callback(null);
     });
 }
