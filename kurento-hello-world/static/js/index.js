@@ -67,19 +67,28 @@ function start() {
 
 	// Disable start button
 	setState(I_AM_STARTING);
-	showSpinner(videoInput, videoOutput);
+	//showSpinner(videoInput, videoOutput);
+	showSpinner(videoOutput);
 
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
-      localVideo: videoInput,
+      //localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
     }
 
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
+    //webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onOffer);
+	    
+	webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+          if(webRtcPeer && webRtcPeer.peerConnection){
+            console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+            console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+          }
+        });
     });
 }
 
@@ -126,7 +135,8 @@ function stop() {
 		}
 		sendMessage(message);
 	}
-	hideSpinner(videoInput, videoOutput);
+	//hideSpinner(videoInput, videoOutput);
+	hideSpinner(videoOutput);
 }
 
 function setState(nextState) {
