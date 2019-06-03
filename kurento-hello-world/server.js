@@ -282,7 +282,9 @@ function start(sessionId, ws, sdpOffer, callback) {
         //});
 		});
 		});
-    }
+    });
+	}
+	
 
 function createPlayerElements(pipeline, ws, callback) {
     pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, PlayerEndpoint){
