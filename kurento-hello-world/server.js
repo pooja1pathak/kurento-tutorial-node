@@ -183,8 +183,14 @@ function start(sessionId, ws, sdpOffer, callback) {
             } 
                  pipeline = p
             
-            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
-                if(error) return onError(error);
+            //pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+                //if(error) return onError(error);
+		
+	    createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
+                if (error) {
+                    pipeline.release();
+                    return callback(error);
+                }
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
@@ -252,19 +258,21 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }
                     });
                     
-                    player.connect(webRtcEndpoint, function(error){
-  					if(error) return onError(error);
+		    connectPlayerElements(webRtcEndpoint, function(error) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+			
+                    //player.connect(webRtcEndpoint, function(error){
+  					//if(error) return onError(error);
 
-  					console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-			   		RecorderEndpoint.record(function(error){
-							  if(error) return onError(error);
-							  console.log("Recorder recording ...");
-						});
+  					//console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
 
-  					player.play(function(error){
-  					  if(error) return onError(error);
-  					  console.log("Player playing ...");
-  					});
+  					//player.play(function(error){
+  					  //if(error) return onError(error);
+  					  //console.log("Player playing ...");
+  					//});
 		});
                                 });
                                 });
@@ -274,6 +282,16 @@ function start(sessionId, ws, sdpOffer, callback) {
         });
 		});
     }
+
+function createPlayerElements(pipeline, ws, callback) {
+    pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, PlayerEndpoint){
+        if (error) {
+            return callback(error);
+        }
+
+        return callback(null, PlayerEndpoint);
+    });
+}
 
 function createMediaElements(pipeline, ws, callback) {
     pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
@@ -304,6 +322,20 @@ function connectMediaElements(webRtcEndpoint, callback) {
     });
 }
 
+function connectPlayerElements(webRtcEndpoint, callback) {
+    PlayerEndpoint.connect(webRtcEndpoint, function(error) {
+        if (error) {
+            return callback(error);
+        }
+	console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+	PlayerEndpoint.play(function(error){
+  		if(error) return onError(error);
+  		console.log("Player playing ...");
+  	});
+        return callback(null);
+    });
+}
+	
 function connectRecorderElements(RecorderEndpoint, PlayerEndpoint, callback) {
     PlayerEndpoint.connect(RecorderEndpoint, function(error) {
         if (error) {
