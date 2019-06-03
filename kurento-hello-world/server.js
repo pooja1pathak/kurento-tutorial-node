@@ -31,7 +31,8 @@ var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8443/',
         ws_uri: 'ws://localhost:8888/kurento',
-                file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+        file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+        address_uri: 'rtsp://180.179.214.151:8051/test1.sdp',
     }
 });
 
@@ -181,6 +182,9 @@ function start(sessionId, ws, sdpOffer, callback) {
                return callback(error);
             } 
                  pipeline = p
+            
+            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+                if(error) return onError(error);
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
@@ -200,15 +204,15 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-                                connectRecorderElements(RecorderEndpoint, webRtcEndpoint, function(error) {
+               connectRecorderElements(RecorderEndpoint, webRtcEndpoint, function(error) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
                     }
-                                RecorderEndpoint.record(function(error){
-                                                                                                                  if(error) return onError(error);
-                                                                                                                  console.log("Recorder recording ...");
-                                                                                                });
+                 RecorderEndpoint.record(function(error){
+                          if(error) return onError(error);
+                          console.log("Recorder recording ...");
+                });
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -242,12 +246,28 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+                    
+                    player.connect(webRtcEndpoint, function(error){
+  					if(error) return onError(error);
+
+  					console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+			   		RecorderEndpoint.record(function(error){
+							  if(error) return onError(error);
+							  console.log("Recorder recording ...");
+						});
+
+  					player.play(function(error){
+  					  if(error) return onError(error);
+  					  console.log("Player playing ...");
+  					});
+		});
                                 });
                                 });
                 });
                                     });
             });
         });
+		});
     }
 
 function createMediaElements(pipeline, ws, callback) {
