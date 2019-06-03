@@ -258,11 +258,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }
                     });
                     
-		    connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
+		    //connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
+                    //if (error) {
+                        //pipeline.release();
+                        //return callback(error);
+                    //}
 			
                     player.connect(webRtcEndpoint, function(error){
   					if(error) return onError(error);
