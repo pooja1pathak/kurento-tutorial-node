@@ -88,7 +88,7 @@ function start() {
       onicecandidate : onIceCandidate
     }
 
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onOffer);
 	 
