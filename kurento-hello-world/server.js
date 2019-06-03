@@ -210,15 +210,15 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-               connectRecorderElements(RecorderEndpoint, player, function(error) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
-                 RecorderEndpoint.record(function(error){
-                          if(error) return onError(error);
-                          console.log("Recorder recording ...");
-                });
+               //connectRecorderElements(RecorderEndpoint, player, function(error) {
+                    //if (error) {
+                        //pipeline.release();
+                        //return callback(error);
+                    //}
+                 //RecorderEndpoint.record(function(error){
+                          //if(error) return onError(error);
+                          //console.log("Recorder recording ...");
+                //});
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -268,21 +268,31 @@ function start(sessionId, ws, sdpOffer, callback) {
   					if(error) return onError(error);
 
   					console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+			    		
+			    		player.connect(RecorderEndpoint, function(error){
+						if(error) return onError(error);
+						console.log("PlayerEndpoint-->RecorderEndpoint connection established")
 
   					player.play(function(error){
   					  if(error) return onError(error);
   					  console.log("Player playing ...");
+						
+					RecorderEndpoint.record(function(error){
+						if(error) return onError(error);
+						console.log("Record");
   					});
 					});
-                    //});
+                    });
                                 });
+                //});
                 });
-                });
-            });
+            //});
         //});
 		});
-		});
+		//});
     });
+	});
+	});
 	}
 	
 
