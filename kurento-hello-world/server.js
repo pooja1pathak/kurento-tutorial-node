@@ -273,13 +273,13 @@ function start(sessionId, ws, sdpOffer, callback) {
   					  if(error) return onError(error);
   					  console.log("Player playing ...");
   					});
-		});
-                                });
+					});
+                    //});
                                 });
                 });
-                                    });
+                });
             });
-        });
+        //});
 		});
 		});
     }
