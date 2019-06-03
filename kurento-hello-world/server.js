@@ -225,10 +225,10 @@ function start(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
-		RecorderEndpoint.record(function(error){
-							  if(error) return onError(error);
-							  console.log("Recorder recording ...");
-						});
+		//RecorderEndpoint.record(function(error){
+							  //if(error) return onError(error);
+							  //console.log("Recorder recording ...");
+						//});
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -267,6 +267,10 @@ function start(sessionId, ws, sdpOffer, callback) {
   					if(error) return onError(error);
 
   					console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+			   		RecorderEndpoint.record(function(error){
+							  if(error) return onError(error);
+							  console.log("Recorder recording ...");
+						});
 
   					player.play(function(error){
   					  if(error) return onError(error);
