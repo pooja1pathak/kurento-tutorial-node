@@ -225,10 +225,10 @@ function start(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
-		//RecorderEndpoint.record(function(error){
-							  //if(error) return onError(error);
-							  //console.log("Recorder recording ...");
-						//});
+		RecorderEndpoint.record(function(error){
+							  if(error) return onError(error);
+							  console.log("Recorder recording ...");
+						});
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
