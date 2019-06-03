@@ -293,7 +293,7 @@ function start(sessionId, ws, sdpOffer, callback) {
     });
 	});
 	});
-	}):
+	});
 }
 	
 
