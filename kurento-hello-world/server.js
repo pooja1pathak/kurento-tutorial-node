@@ -192,7 +192,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                     return callback(error);
                 }
                                 
-                                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
                 if (error) {
                     pipeline.release();
                     return callback(error);
@@ -209,10 +209,10 @@ function start(sessionId, ws, sdpOffer, callback) {
                         pipeline.release();
                         return callback(error);
                     }
-                 RecorderEndpoint.record(function(error){
-                          if(error) return onError(error);
-                          console.log("Recorder recording ...");
-                });
+                 //RecorderEndpoint.record(function(error){
+                          //if(error) return onError(error);
+                          //console.log("Recorder recording ...");
+                //});
 
                 connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
@@ -226,6 +226,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                             id : 'iceCandidate',
                             candidate : candidate
                         }));
+                    });
+			
+		    RecorderEndpoint.record(function(error){
+                          if(error) return onError(error);
+                          console.log("Recorder recording ...");
                     });
                                                 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
