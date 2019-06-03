@@ -258,7 +258,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }
                     });
                     
-		    connectPlayerElements(webRtcEndpoint, function(error) {
+		    connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
@@ -322,7 +322,7 @@ function connectMediaElements(webRtcEndpoint, callback) {
     });
 }
 
-function connectPlayerElements(webRtcEndpoint, callback) {
+function connectPlayerElements(webRtcEndpoint, PlayerEndpoint, callback) {
     PlayerEndpoint.connect(webRtcEndpoint, function(error) {
         if (error) {
             return callback(error);
