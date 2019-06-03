@@ -338,6 +338,10 @@ function play(sessionId, ws, sdpOffer, callback) {
 			if(error) return onError(error);
 			console.log("Player playing recorded video ...");
 		});
+			RecorderEndpoint.record(function(error){
+		if(error) return onError(error);
+		console.log("Recorder recording ...");
+	});
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
@@ -405,10 +409,6 @@ function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
         if (error) {
             return callback(error);
         }
-	RecorderEndpoint.record(function(error){
-		if(error) return onError(error);
-		console.log("Recorder recording ...");
-	});
         return callback(null);
     });
 }
