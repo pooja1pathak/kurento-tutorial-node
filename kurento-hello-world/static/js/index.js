@@ -32,6 +32,7 @@ window.onload = function() {
 	console.log('Page loaded ...');
 	videoInput = document.getElementById('videoInput');
 	videoOutput = document.getElementById('videoOutput');
+	address.value = 'rtsp://180.179.214.151:8051/test1.sdp';
 	setState(I_CAN_START);
 }
 
@@ -78,17 +79,16 @@ function start() {
 
 	// Disable start button
 	setState(I_AM_STARTING);
-	showSpinner(videoInput, videoOutput);
+	showSpinner(videoOutput);
 
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
-      localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
     }
 
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onOffer);
     });
