@@ -380,6 +380,7 @@ function createRecorderElements(pipeline, ws, callback) {
         if (error) {
             return callback(error);
         }
+	console.log("RecorderEndpoint created");
 
         return callback(null, RecorderEndpoint);
     });
@@ -409,6 +410,7 @@ function connectRecorderElements(RecorderEndpoint, webRtcEndpoint, callback) {
         if (error) {
             return callback(error);
         }
+	console.log("RecorderEndpoint connected");
         return callback(null);
     });
 }
