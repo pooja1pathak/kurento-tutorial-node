@@ -262,6 +262,11 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
                     });
+		   
+		RecorderEndpoint.record(function(error){
+							  if(error) return onError(error);
+							  console.log("Recorder recording ...");
+						});
 			
 		   player.connect(webRtcEndpoint, function(error){
   					if(error) return onError(error);
@@ -270,11 +275,6 @@ function start(sessionId, ws, sdpOffer, callback) {
 
   					player.play(function(error){
   					  if(error) return onError(error);
-					  RecorderEndpoint.record(function(error){
-							  if(error) return onError(error);
-							  console.log("Recorder recording ...");
-						});
-
   					  console.log("Player playing ...");
   					});
 		});
