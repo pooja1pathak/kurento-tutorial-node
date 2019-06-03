@@ -16,7 +16,7 @@
  */
 
 var ws = new WebSocket('wss://' + location.host + '/helloworld');
-//var videoInput;
+var videoInput;
 var videoOutput;
 var webRtcPeer;
 var state = null;
@@ -24,15 +24,12 @@ var state = null;
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
 const I_AM_STARTING = 2;
-const I_AM_PLAYING = 3;
-const IN_PLAY = 4;
 
 window.onload = function() {
 	console = new Console();
 	console.log('Page loaded ...');
-	//videoInput = document.getElementById('videoInput');
+	videoInput = document.getElementById('videoInput');
 	videoOutput = document.getElementById('videoOutput');
-	address.value = 'rtsp://180.179.214.151:8051/test1.sdp';
 	setState(I_CAN_START);
 }
 
@@ -48,14 +45,8 @@ ws.onmessage = function(message) {
 	case 'startResponse':
 		startResponse(parsedMessage);
 		break;
-	case 'playResponse':
-		playResponse(parsedMessage);
-		break;
 	case 'error':
 		if (state == I_AM_STARTING) {
-			setState(I_CAN_START);
-		}
-		if (state == I_AM_PLAYING) {
 			setState(I_CAN_START);
 		}
 		onError('Error message from server: ' + parsedMessage.message);
@@ -67,9 +58,6 @@ ws.onmessage = function(message) {
 		if (state == I_AM_STARTING) {
 			setState(I_CAN_START);
 		}
-		if (state == I_AM_PLAYING) {
-			setState(I_CAN_START);
-		}
 		onError('Unrecognized message', parsedMessage);
 	}
 }
@@ -79,47 +67,19 @@ function start() {
 
 	// Disable start button
 	setState(I_AM_STARTING);
-	showSpinner(videoOutput);
+	showSpinner(videoInput, videoOutput);
 
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
+      localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
     }
 
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onOffer);
-	 
-	//webRtcPeer.generateOffer(onOffer);
-        webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
-          if(webRtcPeer && webRtcPeer.peerConnection){
-            console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
-            console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
-          }
-        });
-    });
-}
-
-function play() {
-	console.log('Playing recorded video ...')
-
-	// Disable play button
-	setState(I_AM_PLAYING);
-	showSpinner(videoOutput);
-
-	console.log('Creating WebRtcPeer and generating local sdp offer ...');
-
-    var options = {
-      //localVideo: videoInput,
-      remoteVideo: videoOutput,
-      onicecandidate : onIceCandidate
-    }
-
-    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
-        if(error) return onError(error);
-        this.generateOffer(onPlayOffer);
     });
 }
 
@@ -144,29 +104,12 @@ function onOffer(error, offerSdp) {
 	sendMessage(message);
 }
 
-function onPlayOffer(error, offerSdp) {
-	if(error) return onError(error);
-
-	console.info('Invoking SDP offer callback function ' + location.host);
-	var message = {
-		id : 'play',
-		sdpOffer : offerSdp
-	}
-	sendMessage(message);
-}
-
 function onError(error) {
 	console.error(error);
 }
 
 function startResponse(message) {
 	setState(I_CAN_STOP);
-	console.log('SDP answer received from server. Processing ...');
-	webRtcPeer.processAnswer(message.sdpAnswer);
-}
-
-function playResponse(message) {
-	setState(IN_PLAY);
 	console.log('SDP answer received from server. Processing ...');
 	webRtcPeer.processAnswer(message.sdpAnswer);
 }
@@ -183,8 +126,7 @@ function stop() {
 		}
 		sendMessage(message);
 	}
-	//hideSpinner(videoInput, videoOutput);
-	hideSpinner(videoOutput);
+	hideSpinner(videoInput, videoOutput);
 }
 
 function setState(nextState) {
@@ -193,15 +135,12 @@ function setState(nextState) {
 		$('#start').attr('disabled', false);
 		$('#start').attr('onclick', 'start()');
 		$('#stop').attr('disabled', true);
-		$('#play').attr('disabled', false);
-		$('#play').attr('onclick', 'play()');
 		$('#stop').removeAttr('onclick');
 		break;
 
 	case I_CAN_STOP:
 		$('#start').attr('disabled', true);
 		$('#stop').attr('disabled', false);
-		$('#play').attr('disabled', true);
 		$('#stop').attr('onclick', 'stop()');
 		break;
 
@@ -209,21 +148,7 @@ function setState(nextState) {
 		$('#start').attr('disabled', true);
 		$('#start').removeAttr('onclick');
 		$('#stop').attr('disabled', true);
-		$('#play').attr('disabled', false);
 		$('#stop').removeAttr('onclick');
-		break;
-			
-	case I_AM_PLAYING:
-		$('#play').attr('disabled', true);
-		$('#play').removeAttr('onclick');
-		$('#stop').attr('disabled', false);
-		$('#start').attr('disabled', true);
-		$('#stop').removeAttr('onclick');
-		break;
-	case IN_PLAY:
-		$('#play').attr('disabled', true);
-		$('#stop').attr('disabled', false);
-		$('#start').attr('disabled', true);
 		break;
 
 	default:
