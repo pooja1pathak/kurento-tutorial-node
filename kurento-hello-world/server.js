@@ -339,7 +339,7 @@ function connectPlayerElements(webRtcEndpoint, PlayerEndpoint, callback) {
     });
 }
 	
-function connectRecorderElements(RecorderEndpoint, PlayerEndpoint, callback) {
+function connectRecorderElements(RecorderEndpoint, player, callback) {
     player.connect(RecorderEndpoint, function(error) {
         if (error) {
             return callback(error);
