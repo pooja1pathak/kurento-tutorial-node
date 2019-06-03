@@ -16,7 +16,7 @@
  */
 
 var ws = new WebSocket('wss://' + location.host + '/helloworld');
-var videoInput;
+//var videoInput;
 var videoOutput;
 var webRtcPeer;
 var state = null;
@@ -30,7 +30,7 @@ const IN_PLAY = 4;
 window.onload = function() {
 	console = new Console();
 	console.log('Page loaded ...');
-	videoInput = document.getElementById('videoInput');
+	//videoInput = document.getElementById('videoInput');
 	videoOutput = document.getElementById('videoOutput');
 	address.value = 'rtsp://180.179.214.151:8051/test1.sdp';
 	setState(I_CAN_START);
@@ -112,7 +112,7 @@ function play() {
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
-      localVideo: videoInput,
+      //localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
     }
@@ -183,7 +183,8 @@ function stop() {
 		}
 		sendMessage(message);
 	}
-	hideSpinner(videoInput, videoOutput);
+	//hideSpinner(videoInput, videoOutput);
+	hideSpinner(videoOutput);
 }
 
 function setState(nextState) {
