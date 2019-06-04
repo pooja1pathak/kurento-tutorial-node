@@ -45,6 +45,9 @@ ws.onmessage = function(message) {
 	case 'startResponse':
 		startResponse(parsedMessage);
 		break;
+	case 'playResponse':
+		playResponse(parsedMessage);
+		break;
 	case 'error':
 		if (state == I_AM_STARTING) {
 			setState(I_CAN_START);
@@ -92,6 +95,27 @@ function start() {
     });
 }
 
+function play() {
+	console.log('Playing recorded video ...')
+
+	// Disable play button
+	//setState(I_AM_PLAYING);
+	showSpinner(videoOutput);
+
+	console.log('Creating WebRtcPeer and generating local sdp offer ...');
+
+    var options = {
+      //localVideo: videoInput,
+      remoteVideo: videoOutput,
+      onicecandidate : onIceCandidate
+    }
+
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        if(error) return onError(error);
+        this.generateOffer(onPlayOffer);
+    });
+}
+
 function onIceCandidate(candidate) {
 	   console.log('Local candidate' + JSON.stringify(candidate));
 
@@ -113,12 +137,29 @@ function onOffer(error, offerSdp) {
 	sendMessage(message);
 }
 
+function onPlayOffer(error, offerSdp) {
+	if(error) return onError(error);
+
+	console.info('Invoking SDP offer callback function ' + location.host);
+	var message = {
+		id : 'play',
+		sdpOffer : offerSdp
+	}
+	sendMessage(message);
+}
+
 function onError(error) {
 	console.error(error);
 }
 
 function startResponse(message) {
 	setState(I_CAN_STOP);
+	console.log('SDP answer received from server. Processing ...');
+	webRtcPeer.processAnswer(message.sdpAnswer);
+}
+
+function playResponse(message) {
+	//setState(IN_PLAY);
 	console.log('SDP answer received from server. Processing ...');
 	webRtcPeer.processAnswer(message.sdpAnswer);
 }
