@@ -318,7 +318,7 @@ function createMediaElements(pipeline, ws, callback) {
 }
 
 function createRecorderElements(pipeline, ws, callback) {
-    pipeline.create('RecorderEndpoint', {uri: argv.file_uri}, function(error, RecorderEndpoint) {
+    pipeline.create('RecorderEndpoint', {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
         }
