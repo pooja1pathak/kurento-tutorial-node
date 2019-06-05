@@ -226,17 +226,8 @@ function start(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-               //connectRecorderElements(RecorderEndpoint, player, function(error) {
-                    //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                    //}
-                 //RecorderEndpoint.record(function(error){
-                          //if(error) return onError(error);
-                          //console.log("Recorder recording ...");
-                //});
-
-                connectMediaElements(webRtcEndpoint, function(error) {
+               
+		connectMediaElements(webRtcEndpoint, function(error) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
@@ -249,12 +240,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
-			
-		    //RecorderEndpoint.record(function(error){
-                          //if(error) return onError(error);
-                          //console.log("Recorder recording ...");
-                    //});
-                                                
+			                    
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             pipeline.release();
@@ -274,12 +260,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                         }
                     });
                     
-		    //connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
-                    //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                    //}
-			
                     player.connect(webRtcEndpoint, function(error){
   					if(error) return onError(error);
 
@@ -300,12 +280,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 					});
                     });
                                 });
-                //});
-                });
-            //});
-        //});
 		});
-		//});
     });
 	});
 	});
@@ -334,7 +309,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 		
 		
 	pipeline.create('PlayerEndpoint', {
-                uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+                uri: argv.file_uri,
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
@@ -368,7 +343,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         ws.send(JSON.stringify({
                             id : 'iceCandidate',
-			    //videoId: videoId,
                             candidate : candidate
                         }));
                     });
