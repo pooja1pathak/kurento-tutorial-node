@@ -404,7 +404,7 @@ function play(sessionId, ws, sdpOffer, callback) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         ws.send(JSON.stringify({
                             id : 'iceCandidate',
-			    videoId: videoId,
+			    //videoId: videoId,
                             candidate : candidate
                         }));
                     });
