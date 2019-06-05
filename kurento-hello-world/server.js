@@ -332,20 +332,40 @@ function play(sessionId, ws, sdpOffer, callback) {
 	
 		pipeline = p
 		
-	pipeline.create("PlayerEndpoint", {uri: argv.file_uri}, function(error, player){
-                if(error) return onError(error);
 		
-            createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
-                if (error) {
+	pipeline.create('PlayerEndpoint', {
+                uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+                useEncodedMedia: false
+            }, function(error, playerEndpoint) {
+
+                playerEndpoint.on('EndOfStream', function() {
                     pipeline.release();
-                    return callback(error);
-                }
-		player.on('EndOfStream', function(event){
-    			pipeline.release();
-			stop();
+                });
+
+                playerEndpoint.play(function(error) {
+                    if (error) return wsError(ws, "ERROR 4: " + error);
+
+                    pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
+                        if (error) {
+                            pipeline.release();
+                            return callback(error);
+                        }
+
+		
+	//pipeline.create("PlayerEndpoint", {uri: argv.file_uri}, function(error, player){
+                //if(error) return onError(error);
+		
+            //createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
+                //if (error) {
+                    //pipeline.release();
+                    //return callback(error);
+                //}
+		//player.on('EndOfStream', function(event){
+    			//pipeline.release();
+			//stop();
     
     			//hideSpinner(videoPlayer);
-  		});
+  		//});
 		   
 	    if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -373,11 +393,18 @@ function play(sessionId, ws, sdpOffer, callback) {
                         //pipeline.release();
                         //return callback(error);
                     //}
+			    
+		     playerEndpoint.connect(webRtcEndpoint, function(error) {
+                            if (error) {
+                                pipeline.release();
+                                return callback(error);
+                            }
 		    
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         ws.send(JSON.stringify({
                             id : 'iceCandidate',
+			    videoId: videoId,
                             candidate : candidate
                         }));
                     });
@@ -391,7 +418,14 @@ function play(sessionId, ws, sdpOffer, callback) {
                             pipeline.release();
                             return callback(error);
                         }
-                        return callback(null, sdpAnswer);
+			sessions[sessionId] = {
+                                    'pipeline': pipeline,
+                                    'webRtcEndpoint': webRtcEndpoint,
+                                    'playerEndpoint': playerEndpoint
+                                }
+                                return callback(null, sdpAnswer);
+
+                        //return callback(null, sdpAnswer);
                     });
 		
 
@@ -401,17 +435,17 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }
                     });
 			
-		    player.connect(webRtcEndpoint, function(error){
-  					if(error) return onError(error);
+		    //player.connect(webRtcEndpoint, function(error){
+  					//if(error) return onError(error);
 
-  					console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+  					//console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
 
-  					player.play(function(error){
-  					  if(error) return onError(error);
-  					  console.log("Player playing Recorded Video ...");
+  					//player.play(function(error){
+  					  //if(error) return onError(error);
+  					  //console.log("Player playing Recorded Video ...");
 						
-					});
-                    });
+					//});
+                    //});
                     //});
 		     
                 //});
