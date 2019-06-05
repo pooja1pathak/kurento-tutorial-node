@@ -241,18 +241,18 @@ function start(sessionId, ws, sdpOffer, callback) {
                             return callback(error);
                         }
 
-                        //sessions[sessionId] = {
-                            //'pipeline' : pipeline,
-                            //'webRtcEndpoint' : webRtcEndpoint
-                        //}
-                        //return callback(null, sdpAnswer);
+                        sessions[sessionId] = {
+                            'pipeline' : pipeline,
+                            'webRtcEndpoint' : webRtcEndpoint
+                        }
+                        return callback(null, sdpAnswer);
 			    
-			    sessions[sessionId] = {
-                                    'pipeline': pipeline,
-                                    'webRtcEndpoint': webRtcEndpoint,
-                                    'playerEndpoint': playerEndpoint
-                                }
-                                return callback(null, sdpAnswer);
+			    //sessions[sessionId] = {
+                                    //'pipeline': pipeline,
+                                    //'webRtcEndpoint': webRtcEndpoint,
+                                    //'playerEndpoint': playerEndpoint
+                                //}
+                                //return callback(null, sdpAnswer);
                     });
 
                     webRtcEndpoint.gatherCandidates(function(error) {
