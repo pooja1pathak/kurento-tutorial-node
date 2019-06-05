@@ -125,6 +125,22 @@ wss.on('connection', function(ws) {
                 }));
             });
             break;
+                
+         case 'play':
+            sessionId = request.session.id;
+            play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                if (error) {
+                    return ws.send(JSON.stringify({
+                        id : 'error',
+                        message : error
+                    }));
+                }
+                ws.send(JSON.stringify({
+                    id : 'playResponse',
+                    sdpAnswer : sdpAnswer
+                }));
+            });
+            break;
 
         case 'stop':
             stop(sessionId);
@@ -295,6 +311,97 @@ function start(sessionId, ws, sdpOffer, callback) {
         });
         });
 }
+
+function play(sessionId, ws, sdpOffer, callback) {
+	
+    console.log("In method play")
+    if (!sessionId) {
+        return callback('Cannot use undefined sessionId');
+    }
+
+    getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+	 
+
+        kurentoClient.create('MediaPipeline', function(error, p) {
+            if (error) {
+                return callback(error);
+            }
+	
+		pipeline = p
+		
+		
+	pipeline.create('PlayerEndpoint', {
+                uri: argv.file_uri,
+                useEncodedMedia: false
+            }, function(error, playerEndpoint) {
+
+                playerEndpoint.on('EndOfStream', function() {
+                    pipeline.release();
+                });
+
+                playerEndpoint.play(function(error) {
+                    if (error) return wsError(ws, "ERROR 4: " + error);
+
+                    pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
+                        if (error) {
+                            pipeline.release();
+                            return callback(error);
+                        }
+		   
+	    if (candidatesQueue[sessionId]) {
+                    while(candidatesQueue[sessionId].length) {
+                        var candidate = candidatesQueue[sessionId].shift();
+                        webRtcEndpoint.addIceCandidate(candidate);
+                    }
+                }
+				
+		     playerEndpoint.connect(webRtcEndpoint, function(error) {
+                            if (error) {
+                                pipeline.release();
+                                return callback(error);
+                            }
+		    
+                    webRtcEndpoint.on('OnIceCandidate', function(event) {
+                        var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                        ws.send(JSON.stringify({
+                            id : 'iceCandidate',
+                            candidate : candidate
+                        }));
+                    });
+		
+                    webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                        if (error) {
+                            pipeline.release();
+                            return callback(error);
+                        }
+			            sessions[sessionId] = {
+                                    'pipeline': pipeline,
+                                    'webRtcEndpoint': webRtcEndpoint,
+                                    'playerEndpoint': playerEndpoint
+                                }
+                                return callback(null, sdpAnswer);
+
+                        //return callback(null, sdpAnswer);
+                    });
+		
+
+                    webRtcEndpoint.gatherCandidates(function(error) {
+                        if (error) {
+                            return callback(error);
+                        }
+                    });
+			
+		    
+        });
+    });
+	});	
+	});
+	});
+	});
+	}
 
 
 function createPlayerElements(pipeline, ws, callback) {
