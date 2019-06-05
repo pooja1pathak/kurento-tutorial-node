@@ -419,7 +419,7 @@ function play(sessionId, ws, sdpOffer, callback) {
         });
     });
 	});	
-	});
+	//});
 	}
 	
 
