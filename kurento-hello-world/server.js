@@ -201,12 +201,6 @@ function start(sessionId, ws, sdpOffer, callback) {
             
             pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
                 if(error) return onError(error);
-		
-	    //createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                //if (error) {
-                    //pipeline.release();
-                    //return callback(error);
-                //}
 
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                 if (error) {
@@ -285,7 +279,8 @@ function start(sessionId, ws, sdpOffer, callback) {
 	});
 	});
 	});
-}
+	});
+	}
 
 function play(sessionId, ws, sdpOffer, callback) {
 	
