@@ -350,22 +350,6 @@ function play(sessionId, ws, sdpOffer, callback) {
                             pipeline.release();
                             return callback(error);
                         }
-
-		
-	//pipeline.create("PlayerEndpoint", {uri: argv.file_uri}, function(error, player){
-                //if(error) return onError(error);
-		
-            //createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
-                //if (error) {
-                    //pipeline.release();
-                    //return callback(error);
-                //}
-		//player.on('EndOfStream', function(event){
-    			//pipeline.release();
-			//stop();
-    
-    			//hideSpinner(videoPlayer);
-  		//});
 		   
 	    if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -373,27 +357,7 @@ function play(sessionId, ws, sdpOffer, callback) {
                         webRtcEndpoint.addIceCandidate(candidate);
                     }
                 }
-		    
-	    //createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                //if (error) {
-                    //pipeline.release();
-                    //return callback(error);
-                //}
-		  
-		//PlayerEndpoint.on('EndOfStream', stop);
-		
-		//connectPlayerElements(PlayerEndpoint, webRtcEndpoint, function(error) {
-                    //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                    //}
-			
-		    //connectMediaElements(webRtcEndpoint, function(error) {
-                    //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                    //}
-			    
+				
 		     playerEndpoint.connect(webRtcEndpoint, function(error) {
                             if (error) {
                                 pipeline.release();
@@ -408,11 +372,7 @@ function play(sessionId, ws, sdpOffer, callback) {
                             candidate : candidate
                         }));
                     });
-		//PlayerEndpoint.play(function(error){
-			//if(error) return onError(error);
-			//console.log("Player playing recorded video ...");
-		//});
-
+		
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             pipeline.release();
@@ -435,26 +395,10 @@ function play(sessionId, ws, sdpOffer, callback) {
                         }
                     });
 			
-		    //player.connect(webRtcEndpoint, function(error){
-  					//if(error) return onError(error);
-
-  					//console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-
-  					//player.play(function(error){
-  					  //if(error) return onError(error);
-  					  //console.log("Player playing Recorded Video ...");
-						
-					//});
-                    //});
-                    //});
-		     
-                //});
-            //});
+		    
         });
     });
 	});	
-	});
-	});
 	});
 	});
 	});
