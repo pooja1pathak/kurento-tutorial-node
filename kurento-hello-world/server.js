@@ -332,7 +332,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 	
 		pipeline = p
 		
-	pipeline.create("PlayerEndpoint", {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, player){
+	pipeline.create("PlayerEndpoint", {uri: argv.file_uri}, function(error, player){
                 if(error) return onError(error);
 		
             createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
@@ -340,6 +340,12 @@ function play(sessionId, ws, sdpOffer, callback) {
                     pipeline.release();
                     return callback(error);
                 }
+		player.on('EndOfStream', function(event){
+    			pipeline.release();
+			stop();
+    
+    			//hideSpinner(videoPlayer);
+  		});
 		   
 	    if (candidatesQueue[sessionId]) {
                     while(candidatesQueue[sessionId].length) {
@@ -362,11 +368,11 @@ function play(sessionId, ws, sdpOffer, callback) {
                         //return callback(error);
                     //}
 			
-		    connectMediaElements(webRtcEndpoint, function(error) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
+		    //connectMediaElements(webRtcEndpoint, function(error) {
+                    //if (error) {
+                        //pipeline.release();
+                        //return callback(error);
+                    //}
 		    
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
