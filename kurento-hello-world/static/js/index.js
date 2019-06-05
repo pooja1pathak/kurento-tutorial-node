@@ -159,7 +159,7 @@ function startResponse(message) {
 }
 
 function playResponse(message) {
-	//setState(I_CAN_STOP);
+	setState(I_CAN_STOP);
 	console.log('SDP answer received from server. Processing ...');
 	webRtcPeer.processAnswer(message.sdpAnswer);
 }
