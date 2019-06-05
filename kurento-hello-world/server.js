@@ -310,7 +310,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 
                 playerEndpoint.on('EndOfStream', function() {
                     pipeline.release();
-		    stop();
+		    //stop();
                 });
 
                 playerEndpoint.play(function(error) {
