@@ -45,9 +45,9 @@ ws.onmessage = function(message) {
         case 'startResponse':
                 startResponse(parsedMessage);
                 break;
-        //case 'playResponse':
-		//playResponse(parsedMessage);
-		//break;
+        case 'playResponse':
+		playResponse(parsedMessage);
+		break;
         case 'error':
                 if (state == I_AM_STARTING) {
                         setState(I_CAN_START);
@@ -95,7 +95,7 @@ function start() {
     });
 }
 
-/*function play() {
+function play() {
 	console.log('Playing recorded video ...')
 
 	// Disable play button
@@ -115,7 +115,6 @@ function start() {
         this.generateOffer(onPlayOffer);
     });
 }
-*/
 
 function onIceCandidate(candidate) {
            console.log('Local candidate' + JSON.stringify(candidate));
@@ -137,7 +136,7 @@ function onOffer(error, offerSdp) {
         }
         sendMessage(message);
 }
-/*
+
 function onPlayOffer(error, offerSdp) {
 	if(error) return onError(error);
 
@@ -148,7 +147,7 @@ function onPlayOffer(error, offerSdp) {
 	}
 	sendMessage(message);
 }
-*/
+
 function onError(error) {
         console.error(error);
 }
@@ -158,13 +157,13 @@ function startResponse(message) {
         console.log('SDP answer received from server. Processing ...');
         webRtcPeer.processAnswer(message.sdpAnswer);
 }
-/*
+
 function playResponse(message) {
 	setState(I_CAN_STOP);
 	console.log('SDP answer received from server. Processing ...');
 	webRtcPeer.processAnswer(message.sdpAnswer);
 }
-*/
+
 function stop() {
         console.log('Stopping video call ...');
         setState(I_CAN_START);
