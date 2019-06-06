@@ -26,6 +26,7 @@ var kurento = require('kurento-client');
 var fs    = require('fs');
 var https = require('https');
 var pipeline;
+var webRtcPeer;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -182,6 +183,27 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
+
+function record(){
+	console.log('Star Recording ...')
+	console.log('Creating WebRtcPeer and generating local sdp offer ...');
+	var options = {
+      		onicecandidate : onIceCandidate
+    	}
+	webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        if(error) return onError(error);
+        this.generateOffer(onOffer);
+
+        webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+          if(webRtcPeer && webRtcPeer.peerConnection){
+            console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+            console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+          }
+        });
+    });
+
+}
+
 
 function start(sessionId, ws, sdpOffer, callback) {
     if (!sessionId) {
