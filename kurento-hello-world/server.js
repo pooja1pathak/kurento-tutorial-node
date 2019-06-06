@@ -413,8 +413,7 @@ function start(sessionId, ws, sdpOffer, callback) {
     });
         });
         });
-        });
-}
+        }
 
 function play(sessionId, ws, sdpOffer, callback) {
 	
