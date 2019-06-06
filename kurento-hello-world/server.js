@@ -74,6 +74,7 @@ var port = asUrl.port;
 var server = https.createServer(options, app).listen(port, function() {
     console.log('Kurento Tutorial started');
     console.log('Open ' + url.format(asUrl) + ' with a WebRTC capable browser');
+    record();
 });
 
 var wss = new ws.Server({
@@ -192,7 +193,7 @@ function record(){
     	}
 	webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
-        this.generateOffer(onOffer);
+        this.generateOffer(onRecordOffer);
 
         webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
           if(webRtcPeer && webRtcPeer.peerConnection){
@@ -204,6 +205,87 @@ function record(){
 
 }
 
+function onRecordOffer(error, offerSdp) {
+        if(error) return onError(error);
+
+        getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+
+        kurentoClient.create('MediaPipeline', function(error, p) {
+            if (error) {
+               return callback(error);
+            }
+                 pipeline = p
+
+            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+                if(error) return onError(error);
+		    
+	    pipeline.create("webRtcEndpoint", function(error, webRtcEndpoint){
+                if(error) return onError(error);
+		    
+	    pipeline.create("RecorderEndpoint", function(error, RecorderEndpoint){
+                if(error) return onError(error);
+
+	    setIceCandidateCallbacks(webRtcPeer, webRtc, onError)
+		    
+	    webRtcEndpoint.connect(webRtcEndpoint, function(error) {
+        	if(error) return onError(error);
+
+            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+            	if (error) {
+                      return callback(error);
+                  }
+            });
+
+            webRtcEndpoint.gatherCandidates(function(error) {
+                  if (error) {
+                      return callback(error);
+                  }
+             });
+
+             player.connect(webRtcEndpoint, function(error){
+                   if(error) return onError(error);
+
+                    console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+
+                    player.connect(RecorderEndpoint, function(error){
+                         if(error) return onError(error);
+                         console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+
+                          RecorderEndpoint.record(function(error){
+                                if(error) return onError(error);
+                                console.log("Record");
+                          });
+		    });
+              });
+          });
+      });
+    });
+   });
+  });
+ });
+}
+
+function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
+{
+  webRtcPeer.on('icecandidate', function(candidate) {
+    console.log("Local candidate:",candidate);
+
+    candidate = kurentoClient.getComplexType('IceCandidate')(candidate);
+
+    webRtcEp.addIceCandidate(candidate, onerror)
+  });
+
+  webRtcEp.on('OnIceCandidate', function(event) {
+    var candidate = event.candidate;
+
+    console.log("Remote candidate:",candidate);
+
+    webRtcPeer.addIceCandidate(candidate, onerror);
+  });
+}
 
 function start(sessionId, ws, sdpOffer, callback) {
     if (!sessionId) {
@@ -315,9 +397,9 @@ function start(sessionId, ws, sdpOffer, callback) {
                                           if(error) return onError(error);
                                           console.log("Player playing ...");
 
-                                        RecorderEndpoint.record(function(error){
-                                                if(error) return onError(error);
-                                                console.log("Record");
+                                        //RecorderEndpoint.record(function(error){
+                                                //if(error) return onError(error);
+                                                //console.log("Record");
                                         });
                                         });
                     });
