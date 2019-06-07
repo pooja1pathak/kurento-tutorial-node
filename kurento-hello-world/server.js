@@ -191,7 +191,7 @@ function record(){
 	var options = {
       		onicecandidate : onIceCandidate
     	}
-	webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+	webRtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onRecordOffer);
 
