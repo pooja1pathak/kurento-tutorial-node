@@ -95,6 +95,89 @@ function start() {
     });
 }
 
+var methods = {
+	record: function() {
+		console.log('Star Recording ...')
+		console.log('Creating WebRtcPeer and generating local sdp offer ...');
+		var options = {
+      			onicecandidate : onIceCandidate
+    		}
+		webRtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        		if(error) return onError(error);
+        		this.generateOffer(onRecordOffer);
+
+        		webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+          			if(webRtcPeer && webRtcPeer.peerConnection){
+            				console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+            				console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+          			}
+        		});
+    		});
+	},
+	onRecordOffer: function() {
+		if(error) return onError(error);
+
+        getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+
+        kurentoClient.create('MediaPipeline', function(error, p) {
+            if (error) {
+               return callback(error);
+            }
+                 pipeline = p
+
+            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+                if(error) return onError(error);
+		    
+	    pipeline.create("webRtcEndpoint", function(error, webRtcEndpoint){
+                if(error) return onError(error);
+		    
+	    pipeline.create("RecorderEndpoint", function(error, RecorderEndpoint){
+                if(error) return onError(error);
+
+	    setIceCandidateCallbacks(webRtcPeer, webRtc, onError)
+		    
+	    webRtcEndpoint.connect(webRtcEndpoint, function(error) {
+        	if(error) return onError(error);
+
+            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+            	if (error) {
+                      return callback(error);
+                  }
+            });
+
+            webRtcEndpoint.gatherCandidates(function(error) {
+                  if (error) {
+                      return callback(error);
+                  }
+             });
+
+             player.connect(webRtcEndpoint, function(error){
+                   if(error) return onError(error);
+
+                    console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+
+                    player.connect(RecorderEndpoint, function(error){
+                         if(error) return onError(error);
+                         console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+
+                          RecorderEndpoint.record(function(error){
+                                if(error) return onError(error);
+                                console.log("Record");
+                          });
+		    });
+              });
+          });
+      });
+    });
+   });
+  });
+ });
+}
+};
+module.exports = methods;
 function play() {
 	console.log('Playing recorded video ...')
 
