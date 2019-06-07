@@ -95,7 +95,7 @@ function start() {
     });
 }
 
-/*
+
 var methods = {
 	record: function() {
 		console.log('Star Recording ...')
@@ -179,7 +179,7 @@ var methods = {
 }
 };
 module.exports = methods;
-*/
+
 function play() {
 	console.log('Playing recorded video ...')
 
