@@ -23,6 +23,7 @@ var session = require('express-session')
 var minimist = require('minimist');
 var ws = require('ws');
 var kurento = require('kurento-client');
+var kurentoUtils = require('kurento-utils');
 var fs    = require('fs');
 var https = require('https');
 var index = require('./static/js/index.js');
@@ -75,7 +76,8 @@ var port = asUrl.port;
 var server = https.createServer(options, app).listen(port, function() {
     console.log('Kurento Tutorial started');
     console.log('Open ' + url.format(asUrl) + ' with a WebRTC capable browser');
-    index.record();
+    //index.record();
+    record();
 });
 
 var wss = new ws.Server({
@@ -185,6 +187,90 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
+
+function record(){
+	console.log('Star Recording ...')
+	console.log('Creating WebRtcPeer and generating local sdp offer ...');
+	var options = {
+      		onicecandidate : onIceCandidate
+    	}
+	webRtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        if(error) return onError(error);
+        this.generateOffer(onRecordOffer);
+
+        webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+          if(webRtcPeer && webRtcPeer.peerConnection){
+            console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+            console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+          }
+        });
+    });
+
+}
+
+function onRecordOffer(error, offerSdp) {
+        if(error) return onError(error);
+
+        getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+
+        kurentoClient.create('MediaPipeline', function(error, p) {
+            if (error) {
+               return callback(error);
+            }
+                 pipeline = p
+
+            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+                if(error) return onError(error);
+
+	    pipeline.create("webRtcEndpoint", function(error, webRtcEndpoint){
+                if(error) return onError(error);
+
+	    pipeline.create("RecorderEndpoint", function(error, RecorderEndpoint){
+                if(error) return onError(error);
+
+	    setIceCandidateCallbacks(webRtcPeer, webRtc, onError)
+
+	    webRtcEndpoint.connect(webRtcEndpoint, function(error) {
+        	if(error) return onError(error);
+
+            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+            	if (error) {
+                      return callback(error);
+                  }
+            });
+
+            webRtcEndpoint.gatherCandidates(function(error) {
+                  if (error) {
+                      return callback(error);
+                  }
+             });
+
+             player.connect(webRtcEndpoint, function(error){
+                   if(error) return onError(error);
+
+                    console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+
+                    player.connect(RecorderEndpoint, function(error){
+                         if(error) return onError(error);
+                         console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+
+                          RecorderEndpoint.record(function(error){
+                                if(error) return onError(error);
+                                console.log("Record");
+                          });
+		    });
+              });
+          });
+      });
+    });
+   });
+  });
+ });
+}
+
 
 function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
 {
