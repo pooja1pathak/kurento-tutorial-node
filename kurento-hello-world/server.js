@@ -26,7 +26,7 @@ var kurento = require('kurento-client');
 var kurentoUtils = require('kurento-utils');
 var fs    = require('fs');
 var https = require('https');
-var index = require('./static/js/index.js');
+//var index = require('./static/js/index.js');
 var pipeline;
 var webRtcPeer;
 
