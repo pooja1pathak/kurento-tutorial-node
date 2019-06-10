@@ -28,10 +28,11 @@ var https = require('https');
 var pipeline;
 var datetime = require('node-datetime');
 var dt = datetime.create();
-var day = dt.getDay();
-var month = dt.getMonth();
-var year = dt.getFullYear();
-var file_date=day+month+year;
+//var day = dt.getDay();
+//var month = dt.getMonth();
+//var year = dt.getFullYear();
+//var file_date=day+month+year;
+var file_date = dt.format();
 
 var argv = minimist(process.argv.slice(2), {
     default: {
