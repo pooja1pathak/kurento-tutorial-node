@@ -35,7 +35,6 @@ var file_date=day+month+year;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
-	console.log("file_date: "+file_date);
         as_uri: 'https://localhost:8080/',
         ws_uri: 'ws://localhost:8888/kurento',
         file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
@@ -99,6 +98,7 @@ wss.on('connection', function(ws) {
 
     sessionHandler(request, response, function(err) {
         sessionId = request.session.id;
+	 console.log("file_date: "+file_date);
         console.log('Connection received with sessionId ' + sessionId);
     });
 
