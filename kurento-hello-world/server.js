@@ -249,6 +249,13 @@ function onRecordOffer(error, offerSdp) {
                       return callback(error);
                   }
              });
+		    
+	    webRtcEndpoint.connect(RecorderEndpoint,'VIDEO', function (error) {
+                    RecorderEndpoint.record();
+                    //console.log("recording started ...");
+                });
+		    
+	    /*
 
              player.connect(webRtcEndpoint, function(error){
                    if(error) return onError(error);
@@ -265,6 +272,7 @@ function onRecordOffer(error, offerSdp) {
                           });
 		    });
               });
+		    */
           });
       });
     });
