@@ -76,8 +76,8 @@ var port = asUrl.port;
 var server = https.createServer(options, app).listen(port, function() {
     console.log('Kurento Tutorial started');
     console.log('Open ' + url.format(asUrl) + ' with a WebRTC capable browser');
-    index.record();
-    //record();
+    //index.record();
+    record();
 });
 
 var wss = new ws.Server({
@@ -187,7 +187,7 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
-/*
+
 function record(){
 	console.log('Star Recording ...')
 	console.log('Creating WebRtcPeer and generating local sdp offer ...');
@@ -270,7 +270,6 @@ function onRecordOffer(error, offerSdp) {
   });
  });
 }
-*/
 
 function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
 {
