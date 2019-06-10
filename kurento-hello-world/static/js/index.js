@@ -98,8 +98,8 @@ function start() {
 
 var methods = {
 	record: function() {
-		console.log('Star Recording ...')
-		console.log('Creating WebRtcPeer and generating local sdp offer ...');
+		//console.log('Star Recording ...')
+		//console.log('Creating WebRtcPeer and generating local sdp offer ...');
 		var options = {
       			onicecandidate : onIceCandidate
     		}
@@ -109,8 +109,8 @@ var methods = {
 
         		webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
           			if(webRtcPeer && webRtcPeer.peerConnection){
-            				console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
-            				console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+            				//console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+            				//console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
           			}
         		});
     		});
@@ -158,15 +158,15 @@ var methods = {
              player.connect(webRtcEndpoint, function(error){
                    if(error) return onError(error);
 
-                    console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+                    //console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
 
                     player.connect(RecorderEndpoint, function(error){
                          if(error) return onError(error);
-                         console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+                         //console.log("PlayerEndpoint-->RecorderEndpoint connection established")
 
                           RecorderEndpoint.record(function(error){
                                 if(error) return onError(error);
-                                console.log("Record");
+                                //console.log("Record");
                           });
 		    });
               });
