@@ -27,7 +27,7 @@ var fs    = require('fs');
 var https = require('https');
 var pipeline;
 var datetime = require('node-datetime');
-var dt = datetime.now();
+var dt = datetime.create();
 var day = dt.getDay();
 var month = dt.getMonth();
 var year = dt.getFullYear();
