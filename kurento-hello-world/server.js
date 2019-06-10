@@ -230,7 +230,7 @@ function onRecordOffer(error, offerSdp) {
 	    pipeline.create("webRtcEndpoint", function(error, webRtcEndpoint){
                 if(error) return onError(error);
 
-	    pipeline.create("RecorderEndpoint", function(error, RecorderEndpoint){
+	    pipeline.create("RecorderEndpoint", {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, RecorderEndpoint){
                 if(error) return onError(error);
 
 	    setIceCandidateCallbacks(webRtcPeer, webRtc, onError)
