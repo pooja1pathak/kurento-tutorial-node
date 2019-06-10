@@ -198,12 +198,14 @@ function record(){
         if(error) return onError(error);
         this.generateOffer(onRecordOffer);
 
-        webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+        /*
+	webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
           if(webRtcPeer && webRtcPeer.peerConnection){
             //console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
             //console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
           }
         });
+	*/
     });
 
 }
