@@ -276,7 +276,7 @@ function onRecordOffer(error, offerSdp) {
 function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
 {
   webRtcPeer.on('icecandidate', function(candidate) {
-    console.log("Local candidate:",candidate);
+    //console.log("Local candidate:",candidate);
 
     candidate = kurentoClient.getComplexType('IceCandidate')(candidate);
 
@@ -286,7 +286,7 @@ function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
   webRtcEp.on('OnIceCandidate', function(event) {
     var candidate = event.candidate;
 
-    console.log("Remote candidate:",candidate);
+    //console.log("Remote candidate:",candidate);
 
     webRtcPeer.addIceCandidate(candidate, onerror);
   });
