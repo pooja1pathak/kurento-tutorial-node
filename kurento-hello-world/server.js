@@ -33,11 +33,6 @@ var index = require('./static/js/index.js');
 var pipeline;
 var webRtcPeer;
 
-var options = test1(
-{
-  console.log('Function loaded successfully');
-});
-
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8444/',
@@ -75,6 +70,10 @@ app.use(sessionHandler);
 var sessions = {};
 var candidatesQueue = {};
 var kurentoClient = null;
+
+var options = test1(){
+  console.log('Function loaded successfully');
+};
 
 /*
 * Server startup
