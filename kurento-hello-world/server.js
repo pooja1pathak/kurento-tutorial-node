@@ -33,6 +33,11 @@ var index = require('./static/js/index.js');
 var pipeline;
 var webRtcPeer;
 
+var options =
+{
+  console.log('Function loaded successfully');
+};
+
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8444/',
