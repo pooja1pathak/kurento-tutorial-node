@@ -199,6 +199,7 @@ function record(){
     	}
 	webRtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) {
+	console.log('Error ocurred in webRtcPeer');
 	console.log(webRtcPeer);
 	return onError(error);	
 	}
