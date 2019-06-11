@@ -33,10 +33,10 @@ var index = require('./static/js/index.js');
 var pipeline;
 var webRtcPeer;
 
-var options =
+var options = test1(
 {
   console.log('Function loaded successfully');
-};
+});
 
 var argv = minimist(process.argv.slice(2), {
     default: {
