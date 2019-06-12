@@ -97,7 +97,7 @@ function start() {
     });
 }
 
-var global.methods = {
+var methods = {
 	record: function() {
 		//console.log('Star Recording ...')
 		//console.log('Creating WebRtcPeer and generating local sdp offer ...');
@@ -168,7 +168,7 @@ var global.methods = {
  });
 }
 };
-//module.exports = methods;
+module.exports = methods;
 
 function play() {
 	console.log('Playing recorded video ...')
