@@ -23,7 +23,7 @@ var session = require('express-session')
 var minimist = require('minimist');
 var ws = require('ws');
 var kurento = require('kurento-client');
-var kurentoUtils = require('kurento-utils');
+//var kurentoUtils = require('kurento-utils');
 var fs    = require('fs');
 var https = require('https');
 var pipeline;
