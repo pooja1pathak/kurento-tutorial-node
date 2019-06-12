@@ -20,8 +20,8 @@ var videoInput;
 var videoOutput;
 var webRtcPeer;
 var state = null;
-var file_uri;
-var address_uri;
+var file_uri = 'file:///tmp/test-pooja-hello-world-recording.webm';
+var address_uri = 'rtsp://180.179.214.151:8051/test1.sdp';
 
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
@@ -32,8 +32,6 @@ window.onload = function() {
         console.log('Page loaded ...');
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
-	file_uri = 'file:///tmp/test-pooja-hello-world-recording.webm';
-        address_uri = 'rtsp://180.179.214.151:8051/test1.sdp';
         setState(I_CAN_START);
 }
 
