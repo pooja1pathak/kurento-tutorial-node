@@ -20,6 +20,8 @@ var videoInput;
 var videoOutput;
 var webRtcPeer;
 var state = null;
+var file_uri;
+var address_uri;
 
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
@@ -30,6 +32,8 @@ window.onload = function() {
         console.log('Page loaded ...');
         videoInput = document.getElementById('videoInput');
         videoOutput = document.getElementById('videoOutput');
+	file_uri = 'file:///tmp/test-pooja-hello-world-recording.webm';
+        address_uri = 'rtsp://180.179.214.151:8051/test1.sdp';
         setState(I_CAN_START);
 }
 
@@ -100,17 +104,17 @@ var methods = {
 		//console.log('Star Recording ...')
 		//console.log('Creating WebRtcPeer and generating local sdp offer ...');
 		var options = {
-      			onicecandidate : onIceCandidate
+      			//onicecandidate : onIceCandidate
     		}
 		webRtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         		if(error) return onError(error);
         		this.generateOffer(onRecordOffer);
-        		webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
-          			if(webRtcPeer && webRtcPeer.peerConnection){
+        		//webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event){
+          			//if(webRtcPeer && webRtcPeer.peerConnection){
             				//console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
             				//console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
-          			}
-        		});
+          			//}
+        		//});
     		});
 	},
 	onRecordOffer: function() {
@@ -124,13 +128,13 @@ var methods = {
                return callback(error);
             }
                  pipeline = p
-            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
+            pipeline.create("PlayerEndpoint", {uri: address_uri}, function(error, player){
                 if(error) return onError(error);
 		    
 	    pipeline.create("webRtcEndpoint", function(error, webRtcEndpoint){
                 if(error) return onError(error);
 		    
-	    pipeline.create("RecorderEndpoint", {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, RecorderEndpoint){
+	    pipeline.create("RecorderEndpoint", {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: file_uri}, function(error, RecorderEndpoint){
                 if(error) return onError(error);
 	    setIceCandidateCallbacks(webRtcPeer, webRtc, onError)
 		    
