@@ -41,7 +41,7 @@ var argv = minimist(process.argv.slice(2), {
         as_uri: 'https://localhost:8080/',
         ws_uri: 'ws://localhost:8888/kurento',
         //file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
-	file_uri: 'file:///tmp/'+dateFormat(now, "dd, mm, yyyy")+'/test-pooja-hello-world-recording.webm',
+	file_uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
         address_uri: 'rtsp://180.179.214.151:8051/test1.sdp',
     }
 });
