@@ -27,14 +27,14 @@ var fs    = require('fs');
 var https = require('https');
 var pipeline;
 var dateFormat = require('dateformat');
-var now = new Date();
+//var now = new Date();
 
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8080/',
         ws_uri: 'ws://localhost:8888/kurento',
         //file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
-	file_uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
+	//file_uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
         address_uri: 'rtsp://180.179.214.151:8051/test1.sdp',
     }
 });
@@ -429,7 +429,9 @@ function createMediaElements(pipeline, ws, callback) {
 }
 
 function createRecorderElements(pipeline, ws, callback) {
-    pipeline.create('RecorderEndpoint', {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, RecorderEndpoint) {
+    var now = new Date();
+    //file_uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm
+    pipeline.create('RecorderEndpoint', {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm'}, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
         }
