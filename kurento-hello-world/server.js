@@ -26,19 +26,22 @@ var kurento = require('kurento-client');
 var fs    = require('fs');
 var https = require('https');
 var pipeline;
-var datetime = require('node-datetime');
-var dt = datetime.create();
+//var datetime = require('node-datetime');
+//var dt = datetime.create();
 //var day = dt.getDay();
 //var month = dt.getMonth();
 //var year = dt.getFullYear();
 //var file_date=day+month+year;
-var file_date = dt.format();
+//var file_date = dt.format();
+var dateFormat = require('dateformat');
+var now = new Date();
 
 var argv = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8080/',
         ws_uri: 'ws://localhost:8888/kurento',
-        file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+        //file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
+	file_uri: 'file:///tmp/'+dateFormat(now, "dd, mm, yyyy")+'/test-pooja-hello-world-recording.webm';
         address_uri: 'rtsp://180.179.214.151:8051/test1.sdp',
     }
 });
@@ -99,7 +102,7 @@ wss.on('connection', function(ws) {
 
     sessionHandler(request, response, function(err) {
         sessionId = request.session.id;
-	 console.log("file_date: "+file_date);
+	 //console.log("file_date: "+file_date);
         console.log('Connection received with sessionId ' + sessionId);
     });
 
