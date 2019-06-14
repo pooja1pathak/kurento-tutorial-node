@@ -132,7 +132,7 @@ wss.on('connection', function(ws) {
                 
          case 'play':
             sessionId = request.session.id;
-            play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+            play(sessionId, ws, message.sdpOffer, message.date, function(error, sdpAnswer) {
                 if (error) {
                     return ws.send(JSON.stringify({
                         id : 'error',
@@ -316,7 +316,7 @@ function start(sessionId, ws, sdpOffer, callback) {
         });
 }
 
-function play(sessionId, ws, sdpOffer, callback) {
+function play(sessionId, ws, sdpOffer, date, callback) {
 	
     console.log("In method play")
     if (!sessionId) {
@@ -338,7 +338,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 		
 		
 	pipeline.create('PlayerEndpoint', {
-                uri: argv.file_uri,
+                uri: 'file:///tmp/'+dateFormat(date, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
