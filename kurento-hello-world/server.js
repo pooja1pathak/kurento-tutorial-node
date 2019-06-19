@@ -261,29 +261,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                         return callback(error);
                     }
 
-                    /*createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
-                        if (error) {
-                            pipeline.release();
-                            return callback(error);
-                        }
-
-                        if (candidatesQueue[sessionId]) {
-                            while (candidatesQueue[sessionId].length) {
-                                var candidate = candidatesQueue[sessionId].shift();
-                                webRtcEndpoint.addIceCandidate(candidate);
-                            }
-                        }
-			*/
-                        //connectRecorderElements(RecorderEndpoint, player, function(error) {
-                        //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                        //}
-                        //RecorderEndpoint.record(function(error){
-                        //if(error) return onError(error);
-                        //console.log("Recorder recording ...");
-                        //});
-
                         connectMediaElements(webRtcEndpoint, function(error) {
                             if (error) {
                                 pipeline.release();
@@ -297,11 +274,6 @@ function start(sessionId, ws, sdpOffer, callback) {
                                     candidate: candidate
                                 }));
                             });
-
-                            //RecorderEndpoint.record(function(error){
-                            //if(error) return onError(error);
-                            //console.log("Recorder recording ...");
-                            //});
 
                             webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                                 if (error) {
@@ -322,31 +294,14 @@ function start(sessionId, ws, sdpOffer, callback) {
                                 }
                             });
 
-                            //connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
-                            //if (error) {
-                            //pipeline.release();
-                            //return callback(error);
-                            //}
-
                             player.connect(webRtcEndpoint, function(error) {
                                 if (error) return onError(error);
 
                                 console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
 
-                                //player.connect(RecorderEndpoint, function(error) {
-                                    //if (error) return onError(error);
-                                    //console.log("PlayerEndpoint-->RecorderEndpoint connection established")
-
                                     player.play(function(error) {
                                         if (error) return onError(error);
                                         console.log("Player playing ...");
-
-                                        //RecorderEndpoint.record(function(error) {
-                                            //if (error) return onError(error);
-                                            //console.log("Record");
-                                        //});
-                                    //});
-                                //});
                             });
                         });
                     });
@@ -427,18 +382,13 @@ function play(sessionId, ws, sdpOffer, callback) {
                                     'playerEndpoint': playerEndpoint
                                 }
                                 return callback(null, sdpAnswer);
-
-                                //return callback(null, sdpAnswer);
                             });
-
 
                             webRtcEndpoint.gatherCandidates(function(error) {
                                 if (error) {
                                     return callback(error);
                                 }
                             });
-
-
                         });
                     });
                 });
