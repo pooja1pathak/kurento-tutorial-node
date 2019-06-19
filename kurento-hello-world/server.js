@@ -255,47 +255,47 @@ function start(sessionId, ws, sdpOffer, callback) {
                         return callback(error);
                     }
 
-                        connectMediaElements(webRtcEndpoint, function(error) {
+                    connectMediaElements(webRtcEndpoint, function(error) {
+                        if (error) {
+                            pipeline.release();
+                            return callback(error);
+                        }
+
+                        webRtcEndpoint.on('OnIceCandidate', function(event) {
+                            var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                            ws.send(JSON.stringify({
+                                id: 'iceCandidate',
+                                candidate: candidate
+                            }));
+                        });
+
+                        webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                             if (error) {
                                 pipeline.release();
                                 return callback(error);
                             }
 
-                            webRtcEndpoint.on('OnIceCandidate', function(event) {
-                                var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                                ws.send(JSON.stringify({
-                                    id: 'iceCandidate',
-                                    candidate: candidate
-                                }));
-                            });
+                            sessions[sessionId] = {
+                                'pipeline': pipeline,
+                                'webRtcEndpoint': webRtcEndpoint
+                            }
+                            return callback(null, sdpAnswer);
+                        });
 
-                            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
-                                if (error) {
-                                    pipeline.release();
-                                    return callback(error);
-                                }
+                        webRtcEndpoint.gatherCandidates(function(error) {
+                            if (error) {
+                                return callback(error);
+                            }
+                        });
 
-                                sessions[sessionId] = {
-                                    'pipeline': pipeline,
-                                    'webRtcEndpoint': webRtcEndpoint
-                                }
-                                return callback(null, sdpAnswer);
-                            });
+                        player.connect(webRtcEndpoint, function(error) {
+                            if (error) return onError(error);
 
-                            webRtcEndpoint.gatherCandidates(function(error) {
-                                if (error) {
-                                    return callback(error);
-                                }
-                            });
+                            console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
 
-                            player.connect(webRtcEndpoint, function(error) {
+                            player.play(function(error) {
                                 if (error) return onError(error);
-
-                                console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-
-                                    player.play(function(error) {
-                                        if (error) return onError(error);
-                                        console.log("Player playing ...");
+                                console.log("Player playing ...");
                             });
                         });
                     });
