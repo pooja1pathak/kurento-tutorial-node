@@ -346,7 +346,7 @@ function start(sessionId, ws, sdpOffer, callback) {
                                             //console.log("Record");
                                         //});
                                     //});
-                                });
+                                //});
                             });
                         });
                     });
