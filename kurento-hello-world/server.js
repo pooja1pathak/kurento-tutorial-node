@@ -249,12 +249,6 @@ function start(sessionId, ws, sdpOffer, callback) {
             }, function(error, player) {
                 if (error) return onError(error);
 
-                /*createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                if (error) {
-                pipeline.release();
-                return callback(error);
-                }*/
-
                 createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                     if (error) {
                         pipeline.release();
@@ -397,24 +391,6 @@ function play(sessionId, ws, sdpOffer, callback) {
     });
 }
 
-/*pipeline.create("PlayerEndpoint", {
-                uri: argv.address_uri
-            }, function(error, player) {
-                if (error) return onError(error);
-*/
-
-function createPlayerElements(pipeline, ws, callback) {
-    pipeline.create("PlayerEndpoint", {
-        uri: argv.address_uri
-    }, function(error, player) {
-        if (error) {
-            return callback(error);
-        }
-
-        return callback(null, player);
-    });
-}
-
 function createMediaElements(pipeline, ws, callback) {
     pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
         if (error) {
@@ -441,29 +417,6 @@ function createRecorderElements(pipeline, ws, callback) {
 
 function connectMediaElements(webRtcEndpoint, callback) {
     webRtcEndpoint.connect(webRtcEndpoint, function(error) {
-        if (error) {
-            return callback(error);
-        }
-        return callback(null);
-    });
-}
-
-function connectPlayerElements(webRtcEndpoint, PlayerEndpoint, callback) {
-    PlayerEndpoint.connect(webRtcEndpoint, function(error) {
-        if (error) {
-            return callback(error);
-        }
-        console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-        PlayerEndpoint.play(function(error) {
-            if (error) return onError(error);
-            console.log("Player playing ...");
-        });
-        return callback(null);
-    });
-}
-
-function connectRecorderElements(RecorderEndpoint, player, callback) {
-    player.connect(RecorderEndpoint, function(error) {
         if (error) {
             return callback(error);
         }
