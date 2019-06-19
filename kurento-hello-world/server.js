@@ -238,11 +238,11 @@ function start(sessionId, ws, sdpOffer, callback) {
             return callback(error);
         }
 
-        kurentoClient.create('MediaPipeline', function(error, pipeline) {
+        kurentoClient.create('MediaPipeline', function(error, p) {
             if (error) {
                 return callback(error);
             }
-            //pipeline = p
+            pipeline = p
 
             pipeline.create("PlayerEndpoint", {
                 uri: argv.address_uri
