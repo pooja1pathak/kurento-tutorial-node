@@ -238,22 +238,22 @@ function start(sessionId, ws, sdpOffer, callback) {
             return callback(error);
         }
 
-        kurentoClient.create('MediaPipeline', function(error, p) {
+        kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error) {
                 return callback(error);
             }
-            pipeline = p
+            //pipeline = p
 
-            pipeline.create("PlayerEndpoint", {
+            /*pipeline.create("PlayerEndpoint", {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
-
-                //createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
-                //if (error) {
-                //pipeline.release();
-                //return callback(error);
-                //}
+*/
+                createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
+                if (error) {
+                pipeline.release();
+                return callback(error);
+                }
 
                 createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                     if (error) {
@@ -397,16 +397,21 @@ function play(sessionId, ws, sdpOffer, callback) {
     });
 }
 
+/*pipeline.create("PlayerEndpoint", {
+                uri: argv.address_uri
+            }, function(error, player) {
+                if (error) return onError(error);
+*/
 
 function createPlayerElements(pipeline, ws, callback) {
     pipeline.create("PlayerEndpoint", {
         uri: argv.address_uri
-    }, function(error, PlayerEndpoint) {
+    }, function(error, player) {
         if (error) {
             return callback(error);
         }
 
-        return callback(null, PlayerEndpoint);
+        return callback(null, player);
     });
 }
 
