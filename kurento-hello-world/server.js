@@ -1,20 +1,19 @@
 /*
-* (C) Copyright 2014-2015 Kurento (http://kurento.org/)
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*/
-
+ * (C) Copyright 2014-2015 Kurento (http://kurento.org/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 var path = require('path');
 var url = require('url');
 var cookieParser = require('cookie-parser')
@@ -23,7 +22,7 @@ var session = require('express-session')
 var minimist = require('minimist');
 var ws = require('ws');
 var kurento = require('kurento-client');
-var fs    = require('fs');
+var fs = require('fs');
 var https = require('https');
 var pipeline;
 
@@ -36,38 +35,37 @@ var argv = minimist(process.argv.slice(2), {
     }
 });
 
-var options =
-{
-  key:  fs.readFileSync('keys/server.key'),
-  cert: fs.readFileSync('keys/server.crt')
+var options = {
+    key: fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.crt')
 };
 
 var app = express();
 
 /*
-* Management of sessions
-*/
+ * Management of sessions
+ */
 app.use(cookieParser());
 
 var sessionHandler = session({
-    secret : 'none',
-    rolling : true,
-    resave : true,
-    saveUninitialized : true
+    secret: 'none',
+    rolling: true,
+    resave: true,
+    saveUninitialized: true
 });
 
 app.use(sessionHandler);
 
 /*
-* Definition of global variables.
-*/
+ * Definition of global variables.
+ */
 var sessions = {};
 var candidatesQueue = {};
 var kurentoClient = null;
 
 /*
-* Server startup
-*/
+ * Server startup
+ */
 var asUrl = url.parse(argv.as_uri);
 var port = asUrl.port;
 var server = https.createServer(options, app).listen(port, function() {
@@ -76,18 +74,24 @@ var server = https.createServer(options, app).listen(port, function() {
 });
 
 var wss = new ws.Server({
-    server : server,
-    path : '/helloworld'
+    server: server,
+    path: '/helloworld'
+});
+
+startRec(function(error) {
+    if (error) {
+        console.log('Recording error');
+    };
 });
 
 /*
-* Management of WebSocket messages
-*/
+ * Management of WebSocket messages
+ */
 wss.on('connection', function(ws) {
     var sessionId = null;
     var request = ws.upgradeReq;
     var response = {
-        writeHead : {}
+        writeHead: {}
     };
 
     sessionHandler(request, response, function(err) {
@@ -110,60 +114,60 @@ wss.on('connection', function(ws) {
         console.log('Connection ' + sessionId + ' received message ', message);
 
         switch (message.id) {
-        case 'start':
-            sessionId = request.session.id;
-            start(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
-                if (error) {
-                    return ws.send(JSON.stringify({
-                        id : 'error',
-                        message : error
+            case 'start':
+                sessionId = request.session.id;
+                start(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    if (error) {
+                        return ws.send(JSON.stringify({
+                            id: 'error',
+                            message: error
+                        }));
+                    }
+                    ws.send(JSON.stringify({
+                        id: 'startResponse',
+                        sdpAnswer: sdpAnswer
                     }));
-                }
-                ws.send(JSON.stringify({
-                    id : 'startResponse',
-                    sdpAnswer : sdpAnswer
-                }));
-            });
-            break;
-                
-         case 'play':
-            sessionId = request.session.id;
-            play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
-                if (error) {
-                    return ws.send(JSON.stringify({
-                        id : 'error',
-                        message : error
+                });
+                break;
+
+            case 'play':
+                sessionId = request.session.id;
+                play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    if (error) {
+                        return ws.send(JSON.stringify({
+                            id: 'error',
+                            message: error
+                        }));
+                    }
+                    ws.send(JSON.stringify({
+                        id: 'playResponse',
+                        sdpAnswer: sdpAnswer
                     }));
-                }
+                });
+                break;
+
+            case 'stop':
+                stop(sessionId);
+                break;
+
+            case 'onIceCandidate':
+                onIceCandidate(sessionId, message.candidate);
+                break;
+
+            default:
                 ws.send(JSON.stringify({
-                    id : 'playResponse',
-                    sdpAnswer : sdpAnswer
+                    id: 'error',
+                    message: 'Invalid message ' + message
                 }));
-            });
-            break;
-
-        case 'stop':
-            stop(sessionId);
-            break;
-
-        case 'onIceCandidate':
-            onIceCandidate(sessionId, message.candidate);
-            break;
-
-        default:
-            ws.send(JSON.stringify({
-                id : 'error',
-                message : 'Invalid message ' + message
-            }));
-            break;
+                break;
         }
 
     });
 });
 
 /*
-* Definition of functions
-*/
+ * Definition of functions
+ */
 
 // Recover kurentoClient for the first time.
 function getKurentoClient(callback) {
@@ -174,12 +178,53 @@ function getKurentoClient(callback) {
     kurento(argv.ws_uri, function(error, _kurentoClient) {
         if (error) {
             console.log("Could not find media server at address " + argv.ws_uri);
-            return callback("Could not find media server at address" + argv.ws_uri
-                    + ". Exiting with error " + error);
+            return callback("Could not find media server at address" + argv.ws_uri +
+                ". Exiting with error " + error);
         }
 
         kurentoClient = _kurentoClient;
         callback(null, kurentoClient);
+    });
+}
+
+function startRec(callback) {
+    getKurentoClient(function(error, kurentoClient) {
+        if (error) {
+            return callback(error);
+        }
+        kurentoClient.create('MediaPipeline', function(error, p) {
+            if (error) {
+                return callback(error);
+            }
+            pipeline = p
+
+            pipeline.create("PlayerEndpoint", {
+                uri: argv.address_uri
+            }, function(error, player) {
+                if (error) return onError(error);
+
+                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                    if (error) {
+                        pipeline.release();
+                        return callback(error);
+                    }
+                    player.connect(RecorderEndpoint, function(error) {
+                        if (error) return onError(error);
+                        console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+
+                        player.play(function(error) {
+                            if (error) return onError(error);
+                            console.log("Player playing ...");
+
+                            RecorderEndpoint.record(function(error) {
+                                if (error) return onError(error);
+                                console.log("Record");
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 }
 
@@ -195,125 +240,124 @@ function start(sessionId, ws, sdpOffer, callback) {
 
         kurentoClient.create('MediaPipeline', function(error, p) {
             if (error) {
-               return callback(error);
+                return callback(error);
             }
-                 pipeline = p
+            pipeline = p
 
-            pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, player){
-                if(error) return onError(error);
+            pipeline.create("PlayerEndpoint", {
+                uri: argv.address_uri
+            }, function(error, player) {
+                if (error) return onError(error);
 
-            //createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
+                //createPlayerElements(pipeline, ws, function(error, PlayerEndpoint) {
                 //if (error) {
-                    //pipeline.release();
-                    //return callback(error);
+                //pipeline.release();
+                //return callback(error);
                 //}
 
-            createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
-                if (error) {
-                    pipeline.release();
-                    return callback(error);
-                }
-
-                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
-                if (error) {
-                    pipeline.release();
-                    return callback(error);
-                }
-
-                if (candidatesQueue[sessionId]) {
-                    while(candidatesQueue[sessionId].length) {
-                        var candidate = candidatesQueue[sessionId].shift();
-                        webRtcEndpoint.addIceCandidate(candidate);
-                    }
-                }
-               //connectRecorderElements(RecorderEndpoint, player, function(error) {
-                    //if (error) {
-                        //pipeline.release();
-                        //return callback(error);
-                    //}
-                 //RecorderEndpoint.record(function(error){
-                          //if(error) return onError(error);
-                          //console.log("Recorder recording ...");
-                //});
-
-                connectMediaElements(webRtcEndpoint, function(error) {
+                createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
                     }
 
-                    webRtcEndpoint.on('OnIceCandidate', function(event) {
-                        var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                        ws.send(JSON.stringify({
-                            id : 'iceCandidate',
-                            candidate : candidate
-                        }));
-                    });
-
-                    //RecorderEndpoint.record(function(error){
-                          //if(error) return onError(error);
-                          //console.log("Recorder recording ...");
-                    //});
-
-                    webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                    /*createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
                         if (error) {
                             pipeline.release();
                             return callback(error);
                         }
 
-                        sessions[sessionId] = {
-                            'pipeline' : pipeline,
-                            'webRtcEndpoint' : webRtcEndpoint
+                        if (candidatesQueue[sessionId]) {
+                            while (candidatesQueue[sessionId].length) {
+                                var candidate = candidatesQueue[sessionId].shift();
+                                webRtcEndpoint.addIceCandidate(candidate);
+                            }
                         }
-                        return callback(null, sdpAnswer);
-                    });
-
-                    webRtcEndpoint.gatherCandidates(function(error) {
-                        if (error) {
-                            return callback(error);
-                        }
-                    });
-
-                    //connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
-                    //if (error) {
+			*/
+                        //connectRecorderElements(RecorderEndpoint, player, function(error) {
+                        //if (error) {
                         //pipeline.release();
                         //return callback(error);
-                    //}
+                        //}
+                        //RecorderEndpoint.record(function(error){
+                        //if(error) return onError(error);
+                        //console.log("Recorder recording ...");
+                        //});
 
-                    player.connect(webRtcEndpoint, function(error){
-                                        if(error) return onError(error);
+                        connectMediaElements(webRtcEndpoint, function(error) {
+                            if (error) {
+                                pipeline.release();
+                                return callback(error);
+                            }
 
-                                        console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+                            webRtcEndpoint.on('OnIceCandidate', function(event) {
+                                var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                                ws.send(JSON.stringify({
+                                    id: 'iceCandidate',
+                                    candidate: candidate
+                                }));
+                            });
 
-                                        player.connect(RecorderEndpoint, function(error){
-                                                if(error) return onError(error);
-                                                console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+                            //RecorderEndpoint.record(function(error){
+                            //if(error) return onError(error);
+                            //console.log("Recorder recording ...");
+                            //});
 
-                                        player.play(function(error){
-                                          if(error) return onError(error);
-                                          console.log("Player playing ...");
+                            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                                if (error) {
+                                    pipeline.release();
+                                    return callback(error);
+                                }
 
-                                        RecorderEndpoint.record(function(error){
-                                                if(error) return onError(error);
-                                                console.log("Record");
-                                        });
-                                        });
-                    });
+                                sessions[sessionId] = {
+                                    'pipeline': pipeline,
+                                    'webRtcEndpoint': webRtcEndpoint
+                                }
+                                return callback(null, sdpAnswer);
+                            });
+
+                            webRtcEndpoint.gatherCandidates(function(error) {
+                                if (error) {
+                                    return callback(error);
+                                }
+                            });
+
+                            //connectPlayerElements(webRtcEndpoint, PlayerEndpoint, function(error) {
+                            //if (error) {
+                            //pipeline.release();
+                            //return callback(error);
+                            //}
+
+                            player.connect(webRtcEndpoint, function(error) {
+                                if (error) return onError(error);
+
+                                console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+
+                                //player.connect(RecorderEndpoint, function(error) {
+                                    //if (error) return onError(error);
+                                    //console.log("PlayerEndpoint-->RecorderEndpoint connection established")
+
+                                    player.play(function(error) {
+                                        if (error) return onError(error);
+                                        console.log("Player playing ...");
+
+                                        //RecorderEndpoint.record(function(error) {
+                                            //if (error) return onError(error);
+                                            //console.log("Record");
+                                        //});
+                                    //});
                                 });
-                //});
+                            });
+                        });
+                    });
                 });
-            //});
-        //});
-                });
-                //});
+            });
+        });
     });
-        });
-        });
-        });
 }
 
 function play(sessionId, ws, sdpOffer, callback) {
-	
+
     console.log("In method play")
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
@@ -323,17 +367,17 @@ function play(sessionId, ws, sdpOffer, callback) {
         if (error) {
             return callback(error);
         }
-	 
+
 
         kurentoClient.create('MediaPipeline', function(error, p) {
             if (error) {
                 return callback(error);
             }
-	
-		pipeline = p
-		
-		
-	pipeline.create('PlayerEndpoint', {
+
+            pipeline = p
+
+
+            pipeline.create('PlayerEndpoint', {
                 uri: argv.file_uri,
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
@@ -350,62 +394,64 @@ function play(sessionId, ws, sdpOffer, callback) {
                             pipeline.release();
                             return callback(error);
                         }
-		   
-	    if (candidatesQueue[sessionId]) {
-                    while(candidatesQueue[sessionId].length) {
-                        var candidate = candidatesQueue[sessionId].shift();
-                        webRtcEndpoint.addIceCandidate(candidate);
-                    }
-                }
-				
-		     playerEndpoint.connect(webRtcEndpoint, function(error) {
+
+                        if (candidatesQueue[sessionId]) {
+                            while (candidatesQueue[sessionId].length) {
+                                var candidate = candidatesQueue[sessionId].shift();
+                                webRtcEndpoint.addIceCandidate(candidate);
+                            }
+                        }
+
+                        playerEndpoint.connect(webRtcEndpoint, function(error) {
                             if (error) {
                                 pipeline.release();
                                 return callback(error);
                             }
-		    
-                    webRtcEndpoint.on('OnIceCandidate', function(event) {
-                        var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                        ws.send(JSON.stringify({
-                            id : 'iceCandidate',
-                            candidate : candidate
-                        }));
-                    });
-		
-                    webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
-                        if (error) {
-                            pipeline.release();
-                            return callback(error);
-                        }
-			            sessions[sessionId] = {
+
+                            webRtcEndpoint.on('OnIceCandidate', function(event) {
+                                var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                                ws.send(JSON.stringify({
+                                    id: 'iceCandidate',
+                                    candidate: candidate
+                                }));
+                            });
+
+                            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                                if (error) {
+                                    pipeline.release();
+                                    return callback(error);
+                                }
+                                sessions[sessionId] = {
                                     'pipeline': pipeline,
                                     'webRtcEndpoint': webRtcEndpoint,
                                     'playerEndpoint': playerEndpoint
                                 }
                                 return callback(null, sdpAnswer);
 
-                        //return callback(null, sdpAnswer);
-                    });
-		
+                                //return callback(null, sdpAnswer);
+                            });
 
-                    webRtcEndpoint.gatherCandidates(function(error) {
-                        if (error) {
-                            return callback(error);
-                        }
+
+                            webRtcEndpoint.gatherCandidates(function(error) {
+                                if (error) {
+                                    return callback(error);
+                                }
+                            });
+
+
+                        });
                     });
-			
-		    
+                });
+            });
         });
     });
-	});	
-	});
-	});
-	});
-	}
+}
 
 
 function createPlayerElements(pipeline, ws, callback) {
-    pipeline.create("PlayerEndpoint", {uri: argv.address_uri}, function(error, PlayerEndpoint){
+    pipeline.create("PlayerEndpoint", {
+        uri: argv.address_uri
+    }, function(error, PlayerEndpoint) {
         if (error) {
             return callback(error);
         }
@@ -425,7 +471,11 @@ function createMediaElements(pipeline, ws, callback) {
 }
 
 function createRecorderElements(pipeline, ws, callback) {
-    pipeline.create('RecorderEndpoint', {stopOnEndOfStream: true, mediaProfile:'WEBM_VIDEO_ONLY', uri: argv.file_uri}, function(error, RecorderEndpoint) {
+    pipeline.create('RecorderEndpoint', {
+        stopOnEndOfStream: true,
+        mediaProfile: 'WEBM_VIDEO_ONLY',
+        uri: argv.file_uri
+    }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
         }
@@ -449,9 +499,9 @@ function connectPlayerElements(webRtcEndpoint, PlayerEndpoint, callback) {
             return callback(error);
         }
         console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
-        PlayerEndpoint.play(function(error){
-                if(error) return onError(error);
-                console.log("Player playing ...");
+        PlayerEndpoint.play(function(error) {
+            if (error) return onError(error);
+            console.log("Player playing ...");
         });
         return callback(null);
     });
@@ -484,8 +534,7 @@ function onIceCandidate(sessionId, _candidate) {
         console.info('Sending candidate');
         var webRtcEndpoint = sessions[sessionId].webRtcEndpoint;
         webRtcEndpoint.addIceCandidate(candidate);
-    }
-    else {
+    } else {
         console.info('Queueing candidate');
         if (!candidatesQueue[sessionId]) {
             candidatesQueue[sessionId] = [];
