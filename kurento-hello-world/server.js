@@ -25,6 +25,8 @@ var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
 var pipeline;
+var dateFormat = require('dateformat');
+var now;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -202,8 +204,10 @@ function startRec(callback) {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
+                
+                now = new Date();
 
-                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
@@ -219,6 +223,11 @@ function startRec(callback) {
                             RecorderEndpoint.record(function(error) {
                                 if (error) return onError(error);
                                 console.log("Record");
+                                var newTime = new Date();
+                                console.log("newTime: " + newTime);
+                                var hour= newTime.getHours();
+                                console.log("hour: " + hour);
+                                
                             });
                         });
                     });
@@ -401,11 +410,11 @@ function createMediaElements(pipeline, ws, callback) {
     });
 }
 
-function createRecorderElements(pipeline, ws, callback) {
+function createRecorderElements(pipeline, now, ws, callback) {
     pipeline.create('RecorderEndpoint', {
         stopOnEndOfStream: true,
         mediaProfile: 'WEBM_VIDEO_ONLY',
-        uri: argv.file_uri
+        uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm'
     }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
