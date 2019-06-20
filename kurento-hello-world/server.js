@@ -234,15 +234,17 @@ function startRec(callback) {
                                         console.log("minute: " + minute);
                                         var second= newTime.getSeconds();
                                         console.log("second: " + second);
-                                        sleep(5000);
+                                        
                                         if (hour == 23){
                                             if (minute == 59){
-                                                if (second >= 55){
+                                                if (second == 59){
                                                   pipeline.release();
+                                                  now = '2019-06-21T01:00:00'
                                                   startRec();
                                             }
                                         }
                                      }
+                                     sleep(1000);
                                 }
                             });
                         });
