@@ -226,8 +226,8 @@ function startRec(callback) {
                                 if (error) return onError(error);
                                 console.log("Record");
                                 while (true){
-                                        //var newTime = new Date();
-                                        Date newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
+                                        var newTime = new Date();
+                                        newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
                                         console.log("newTime: " + newTime);
                                         var hour= newTime.getHours();
                                         console.log("hour: " + hour);
