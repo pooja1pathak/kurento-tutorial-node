@@ -206,7 +206,8 @@ function startRec(callback) {
             }, function(error, player) {
                 if (error) return onError(error);
                 
-                now = new Date();
+                //now = new Date();
+                now = '2019-06-20T23:59:56'
 
                 createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
