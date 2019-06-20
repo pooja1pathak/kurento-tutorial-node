@@ -241,6 +241,7 @@ function startRec(callback) {
                                                   startRec();
                                             }
                                         }
+                                     }
                                 }
                             });
                         });
