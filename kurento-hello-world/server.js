@@ -480,4 +480,12 @@ function onIceCandidate(sessionId, _candidate) {
     }
 }
 
+process.stdin.setRawMode(true);
+process.stdin.on("keypress", function(chunk, key) {
+  if(key && key.name === "c" && key.ctrl) {
+    console.log("bye bye");
+    process.exit();
+  }
+});
+
 app.use(express.static(path.join(__dirname, 'static')));
