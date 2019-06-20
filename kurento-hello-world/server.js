@@ -495,7 +495,11 @@ process.stdin.on("keypress", function(chunk, key) {
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
-  pipeline1.release();
+  if(pipeline1){
+    pipeline1.release();
+    pipeline1 = null;
+  }
+  //pipeline1.release();
   console.log("Pipeline1 released");
   process.exit();
 });
