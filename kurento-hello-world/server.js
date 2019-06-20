@@ -25,6 +25,7 @@ var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
 var dateFormat = require('dateformat');
+var sleep = require('system-sleep');
 var pipeline;
 
 var argv = minimist(process.argv.slice(2), {
