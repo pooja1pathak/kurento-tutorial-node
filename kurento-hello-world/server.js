@@ -231,7 +231,16 @@ function startRec(callback) {
                                         console.log("hour: " + hour);
                                         var minute= newTime.getMinutes();
                                         console.log("minute: " + minute);
+                                        var second= newTime.getSeconds();
+                                        console.log("second: " + second);
                                         sleep(5000);
+                                        if (hour == 23){
+                                            if (minute == 59){
+                                                if (second >= 55){
+                                                  pipeline.release();
+                                                  startRec();
+                                            }
+                                        }
                                 }
                             });
                         });
