@@ -28,6 +28,7 @@ var pipeline;
 var dateFormat = require('dateformat');
 var sleep = require('system-sleep');
 var now;
+var newTime;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -227,7 +228,7 @@ function startRec(callback) {
                                 console.log("Record");
                                 while (true){
                                         //Date(2018, 11, 24, 10, 33, 30);
-                                        var newTime = new Date(2019, 06, 20, 23, 59, 59);
+                                        newTime = new Date(2019, 06, 20, 23, 59, 59);
                                         //newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
                                         console.log("newTime: " + newTime);
                                         var hour= newTime.getHours();
@@ -242,7 +243,7 @@ function startRec(callback) {
                                                 if (second == 59){
                                                   sleep(1000);
                                                   pipeline.release();
-                                                  now = new Date(2019, 06, 21, 00, 00, 00);
+                                                  now = new Date(2019, 06, 21, 00, 00, 01);
                                                   startRec();
                                             }
                                         }
