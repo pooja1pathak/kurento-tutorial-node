@@ -192,6 +192,7 @@ function getKurentoClient(callback) {
 }
 //now = new Date(2019, 06, 20, 11, 12, 31);
 now = new Date("June 20, 2019 11:13:00");
+
 function startRec(callback) {
     getKurentoClient(function(error, kurentoClient) {
         if (error) {
@@ -207,7 +208,7 @@ function startRec(callback) {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
-                
+
                 //now = new Date();
                 //now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
 
@@ -227,27 +228,25 @@ function startRec(callback) {
                             RecorderEndpoint.record(function(error) {
                                 if (error) return onError(error);
                                 console.log("Record");
-                                while (true){
-                                        //Date(2018, 11, 24, 10, 33, 30);
-                                        //newTime = new Date(2019, 06, 20, 23, 59, 59);
+                                while (true) {
+                                    //newTime = new Date();
                                     newTime = new Date("June 20, 2019 23:59:59");
-                                        //newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
-                                        var hour= newTime.getHours();
-                                        var minute= newTime.getMinutes();
-                                        var second= newTime.getSeconds();
-                                       
-                                        if (hour == 23){
-                                            if (minute == 59){
-                                                if (second == 59){
-                                                  sleep(1000);
-                                                  pipeline.release();
-                                                  //now = new Date(2019, 06, 21, 00, 00, 01);
-                                                    now = new Date("June 21, 2019 00:00:01");
-                                                  startRec();
+                                    var hour = newTime.getHours();
+                                    var minute = newTime.getMinutes();
+                                    var second = newTime.getSeconds();
+
+                                    if (hour == 23) {
+                                        if (minute == 59) {
+                                            if (second == 59) {
+                                                sleep(1000);
+                                                pipeline.release();
+                                                //now = new Date(2019, 06, 21, 00, 00, 01);
+                                                now = new Date("June 21, 2019 00:00:01");
+                                                startRec();
                                             }
                                         }
-                                     }
-                                     sleep(1000);
+                                    }
+                                    sleep(1000);
                                 }
                             });
                         });
@@ -435,7 +434,7 @@ function createRecorderElements(pipeline, now, ws, callback) {
     pipeline.create('RecorderEndpoint', {
         stopOnEndOfStream: true,
         mediaProfile: 'WEBM_VIDEO_ONLY',
-        uri: 'file:///tmp/'+dateFormat(now, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm'
+        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/test-pooja-hello-world-recording.webm'
     }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
