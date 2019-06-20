@@ -139,11 +139,13 @@ function onOffer(error, offerSdp) {
 
 function onPlayOffer(error, offerSdp) {
 	if(error) return onError(error);
+	var select_date = '2019-06-14T17:46:21'
 
 	console.info('Invoking SDP offer callback function ' + location.host);
 	var message = {
 		id : 'play',
-		sdpOffer : offerSdp
+		sdpOffer : offerSdp,
+		date : select_date
 	}
 	sendMessage(message);
 }
