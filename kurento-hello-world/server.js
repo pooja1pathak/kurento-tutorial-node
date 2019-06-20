@@ -228,6 +228,7 @@ function startRec(callback) {
                             RecorderEndpoint.record(function(error) {
                                 if (error) return onError(error);
                                 console.log("Record");
+                                /*
                                 while (true) {
                                     //newTime = new Date();
                                     newTime = new Date("June 20, 2019 23:59:59");
@@ -248,6 +249,7 @@ function startRec(callback) {
                                     }
                                     sleep(1000);
                                 }
+                                */
                             });
                         });
                     });
