@@ -207,7 +207,7 @@ function startRec(callback) {
                 if (error) return onError(error);
                 
                 //now = new Date();
-                now = '2019-06-20T23:59:56'
+                now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
 
                 createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
@@ -226,7 +226,8 @@ function startRec(callback) {
                                 if (error) return onError(error);
                                 console.log("Record");
                                 while (true){
-                                        var newTime = new Date();
+                                        //var newTime = new Date();
+                                        var newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
                                         console.log("newTime: " + newTime);
                                         var hour= newTime.getHours();
                                         console.log("hour: " + hour);
