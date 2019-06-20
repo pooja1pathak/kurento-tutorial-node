@@ -190,7 +190,8 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
-now = new Date(2019, 06, 20, 11, 12, 31);
+//now = new Date(2019, 06, 20, 11, 12, 31);
+now = new Date("June 20, 2019 11:13:00");
 function startRec(callback) {
     getKurentoClient(function(error, kurentoClient) {
         if (error) {
@@ -228,7 +229,8 @@ function startRec(callback) {
                                 console.log("Record");
                                 while (true){
                                         //Date(2018, 11, 24, 10, 33, 30);
-                                        newTime = new Date(2019, 06, 20, 23, 59, 59);
+                                        //newTime = new Date(2019, 06, 20, 23, 59, 59);
+                                    newTime = new Date("June 20, 2019 23:59:59");
                                         //newTime = 'Thu Jun 20 2019 23:59:59 GMT+0000 (UTC)'
                                         var hour= newTime.getHours();
                                         var minute= newTime.getMinutes();
@@ -239,7 +241,8 @@ function startRec(callback) {
                                                 if (second == 59){
                                                   sleep(1000);
                                                   pipeline.release();
-                                                  now = new Date(2019, 06, 21, 00, 00, 01);
+                                                  //now = new Date(2019, 06, 21, 00, 00, 01);
+                                                    now = new Date("June 21, 2019 00:00:01");
                                                   startRec();
                                             }
                                         }
