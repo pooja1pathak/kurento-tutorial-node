@@ -223,11 +223,13 @@ function startRec(callback) {
                             RecorderEndpoint.record(function(error) {
                                 if (error) return onError(error);
                                 console.log("Record");
-                                var newTime = new Date();
-                                console.log("newTime: " + newTime);
-                                var hour= newTime.getHours();
-                                console.log("hour: " + hour);
-                                
+                                while (true){
+                                    var newTime = new Date();
+                                    console.log("newTime: " + newTime);
+                                    var hour= newTime.getHours();
+                                    console.log("hour: " + hour);
+                                    yield sleep(5000);
+                                }
                             });
                         });
                     });
