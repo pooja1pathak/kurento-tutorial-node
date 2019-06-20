@@ -189,7 +189,7 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
-
+now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
 function startRec(callback) {
     getKurentoClient(function(error, kurentoClient) {
         if (error) {
@@ -207,7 +207,7 @@ function startRec(callback) {
                 if (error) return onError(error);
                 
                 //now = new Date();
-                now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
+                //now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
 
                 createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
@@ -240,8 +240,9 @@ function startRec(callback) {
                                         if (hour == 23){
                                             if (minute == 59){
                                                 if (second == 59){
+                                                  sleep(1000);
                                                   pipeline.release();
-                                                  now = '2019-06-21T01:00:00'
+                                                  now = new Date(2019, 06, 21, 00, 00, 00);
                                                   startRec();
                                             }
                                         }
