@@ -25,6 +25,7 @@ var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
 var pipeline;
+var pipeline1;
 var dateFormat = require('dateformat');
 var sleep = require('system-sleep');
 var now;
@@ -202,9 +203,9 @@ function startRec(callback) {
             if (error) {
                 return callback(error);
             }
-            pipeline = p
+            pipeline1 = p
 
-            pipeline.create("PlayerEndpoint", {
+            pipeline1.create("PlayerEndpoint", {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
@@ -212,9 +213,9 @@ function startRec(callback) {
                 //now = new Date();
                 //now = 'Thu Jun 20 2019 23:59:58 GMT+0000 (UTC)'
 
-                createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
+                createRecorderElements(pipeline1, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
-                        pipeline.release();
+                        pipeline1.release();
                         return callback(error);
                     }
                     player.connect(RecorderEndpoint, function(error) {
@@ -494,8 +495,8 @@ process.stdin.on("keypress", function(chunk, key) {
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
-  pipeline.release();
-  console.log("Pipeline released");
+  pipeline1.release();
+  console.log("Pipeline1 released");
   process.exit();
 });
 
