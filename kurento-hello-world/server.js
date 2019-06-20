@@ -24,6 +24,7 @@ var ws = require('ws');
 var kurento = require('kurento-client');
 var fs = require('fs');
 var https = require('https');
+var dateFormat = require('dateformat');
 var pipeline;
 
 var argv = minimist(process.argv.slice(2), {
@@ -132,7 +133,7 @@ wss.on('connection', function(ws) {
 
             case 'play':
                 sessionId = request.session.id;
-                play(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                play(sessionId, ws, message.sdpOffer, message.date, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
                             id: 'error',
@@ -202,8 +203,10 @@ function startRec(callback) {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
+                
+                now = new Date();
 
-                createRecorderElements(pipeline, ws, function(error, RecorderEndpoint) {
+                createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
                         pipeline.release();
                         return callback(error);
@@ -219,6 +222,24 @@ function startRec(callback) {
                             RecorderEndpoint.record(function(error) {
                                 if (error) return onError(error);
                                 console.log("Record");
+                                while (true) {
+                                    newTime = new Date();
+                                    //newTime = new Date("June 20, 2019 23:59:59");
+                                    var hour = newTime.getHours();
+                                    var minute = newTime.getMinutes();
+                                    var second = newTime.getSeconds();
+
+                                    if (hour == 23) {
+                                        if (minute == 59) {
+                                            if (second == 59) {
+                                                sleep(1000);
+                                                pipeline.release();
+                                                startRec();
+                                            }
+                                        }
+                                    }
+                                    sleep(1000);
+                                }
                             });
                         });
                     });
@@ -305,7 +326,7 @@ function start(sessionId, ws, sdpOffer, callback) {
     });
 }
 
-function play(sessionId, ws, sdpOffer, callback) {
+function play(sessionId, ws, sdpOffer, date, callback) {
 
     console.log("In method play")
     if (!sessionId) {
@@ -327,7 +348,7 @@ function play(sessionId, ws, sdpOffer, callback) {
 
 
             pipeline.create('PlayerEndpoint', {
-                uri: argv.file_uri,
+                uri: 'file:///tmp/'+dateFormat(date, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
@@ -401,11 +422,11 @@ function createMediaElements(pipeline, ws, callback) {
     });
 }
 
-function createRecorderElements(pipeline, ws, callback) {
+function createRecorderElements(pipeline, now, ws, callback) {
     pipeline.create('RecorderEndpoint', {
         stopOnEndOfStream: true,
         mediaProfile: 'WEBM_VIDEO_ONLY',
-        uri: argv.file_uri
+        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/test-pooja-hello-world-recording.webm'
     }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
