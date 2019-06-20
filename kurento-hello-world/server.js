@@ -26,6 +26,7 @@ var fs = require('fs');
 var https = require('https');
 var pipeline;
 var dateFormat = require('dateformat');
+var sleep = require('system-sleep');
 var now;
 
 var argv = minimist(process.argv.slice(2), {
@@ -224,8 +225,14 @@ function startRec(callback) {
                                 if (error) return onError(error);
                                 console.log("Record");
                                 while (true){
-                                    setTimeout(showTime, 3000);
-                                    
+                                    //setTimeout(showTime, 3000);
+                                        var newTime = new Date();
+                                        console.log("newTime: " + newTime);
+                                        var hour= newTime.getHours();
+                                        console.log("hour: " + hour);
+    //var waitTill = new Date(new Date().getTime() + seconds * 1000);
+    //while(waitTill > new Date()){}
+                                    sleep(5000);
                                 }
                             });
                         });
