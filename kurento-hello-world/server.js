@@ -228,7 +228,8 @@ function startRec(callback) {
                                     console.log("newTime: " + newTime);
                                     var hour= newTime.getHours();
                                     console.log("hour: " + hour);
-                                    await sleep(5000);
+                                    var waitTill = new Date(new Date().getTime() + seconds * 1000);
+                                    while(waitTill > new Date()){}
                                 }
                             });
                         });
