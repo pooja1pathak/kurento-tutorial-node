@@ -224,12 +224,8 @@ function startRec(callback) {
                                 if (error) return onError(error);
                                 console.log("Record");
                                 while (true){
-                                    var newTime = new Date();
-                                    console.log("newTime: " + newTime);
-                                    var hour= newTime.getHours();
-                                    console.log("hour: " + hour);
-                                    var waitTill = new Date(new Date().getTime() + seconds * 1000);
-                                    while(waitTill > new Date()){}
+                                    setTimeout(showTime, 3000);
+                                    
                                 }
                             });
                         });
@@ -238,6 +234,15 @@ function startRec(callback) {
             });
         });
     });
+}
+
+function showTime() {
+    var newTime = new Date();
+    console.log("newTime: " + newTime);
+    var hour= newTime.getHours();
+    console.log("hour: " + hour);
+    var waitTill = new Date(new Date().getTime() + seconds * 1000);
+    while(waitTill > new Date()){}
 }
 
 function start(sessionId, ws, sdpOffer, callback) {
