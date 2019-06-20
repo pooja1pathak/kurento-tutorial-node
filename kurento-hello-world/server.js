@@ -228,7 +228,7 @@ function startRec(callback) {
                                     console.log("newTime: " + newTime);
                                     var hour= newTime.getHours();
                                     console.log("hour: " + hour);
-                                    yield sleep(5000);
+                                    await sleep(5000);
                                 }
                             });
                         });
