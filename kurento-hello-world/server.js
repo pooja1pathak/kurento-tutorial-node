@@ -136,6 +136,7 @@ wss.on('connection', function(ws) {
 
             case 'play':
                 sessionId = request.session.id;
+                console.log("In case play date : " + message.dateTime)
                 play(sessionId, ws, message.sdpOffer, message.dateTime, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
@@ -358,6 +359,8 @@ function play(sessionId, ws, sdpOffer, date, callback) {
                 playerEndpoint.on('EndOfStream', function() {
                     pipeline.release();
                 });
+                
+                console.log('file:///tmp/' + dateFormat(date, "ddmmyyyy") + '/kurento-recording.webm')
 
                 playerEndpoint.play(function(error) {
                     if (error) return wsError(ws, "ERROR 4: " + error);
