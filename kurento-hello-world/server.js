@@ -244,6 +244,8 @@ function startRec(callback) {
                                                 pipeline.release();
                                                 //now = new Date(2019, 06, 21, 00, 00, 01);
                                                 now = new Date("June 21, 2019 00:00:01");
+                                                RecorderEndpoint.stop(function(error) {
+                                                if (error) return onError(error);});
                                                 startRec();
                                             }
                                         }
@@ -500,6 +502,8 @@ process.on('SIGINT', function() {
     pipeline1.release();
     pipeline1 = null;
   }
+  RecorderEndpoint.stop(function(error) {
+   if (error) return onError(error);});
   //pipeline1.release();
   console.log("Pipeline1 released");
   process.exit();
