@@ -331,6 +331,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 function play(sessionId, ws, sdpOffer, date, callback) {
 
     console.log("In method play")
+    console.log("date: "+ date)
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
     }
