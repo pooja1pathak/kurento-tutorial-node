@@ -502,8 +502,6 @@ process.on('SIGINT', function() {
     pipeline1.release();
     pipeline1 = null;
   }
-  RecorderEndpoint.stop(function(error) {
-   if (error) return onError(error);});
   //pipeline1.release();
   console.log("Pipeline1 released");
   process.exit(0);
