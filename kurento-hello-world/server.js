@@ -205,7 +205,7 @@ function startRec(callback) {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
-                
+
                 var now = new Date();
 
                 createRecorderElements(pipeline1, now, ws, function(error, RecorderEndpoint) {
@@ -349,7 +349,7 @@ function play(sessionId, ws, sdpOffer, date, callback) {
 
 
             pipeline.create('PlayerEndpoint', {
-                uri: 'file:///tmp/'+dateFormat(date, "ddmmyyyy")+'/kurento-recording.webm',
+                uri: 'file:///tmp/' + dateFormat(date, "ddmmyyyy") + '/kurento-recording.webm',
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
