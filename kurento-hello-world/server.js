@@ -72,13 +72,13 @@ var kurentoClient = null;
 var asUrl = url.parse(argv.as_uri);
 var port = asUrl.port;
 var server = https.createServer(options, app).listen(port, function() {
-    console.log('Kurento Tutorial started');
+    console.log('Kurento client started');
     console.log('Open ' + url.format(asUrl) + ' with a WebRTC capable browser');
 });
 
 var wss = new ws.Server({
     server: server,
-    path: '/helloworld'
+    path: '/kurento'
 });
 
 startRec(function(error) {
@@ -226,7 +226,6 @@ function startRec(callback) {
                                 console.log("Record");
                                 while (true) {
                                     var newTime = new Date();
-                                    //newTime = new Date("June 20, 2019 23:59:59");
                                     var hour = newTime.getHours();
                                     var minute = newTime.getMinutes();
                                     var second = newTime.getSeconds();
@@ -350,7 +349,7 @@ function play(sessionId, ws, sdpOffer, date, callback) {
 
 
             pipeline.create('PlayerEndpoint', {
-                uri: 'file:///tmp/'+dateFormat(date, "ddmmyyyy")+'/test-pooja-hello-world-recording.webm',
+                uri: 'file:///tmp/'+dateFormat(date, "ddmmyyyy")+'/kurento-recording.webm',
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
@@ -428,7 +427,7 @@ function createRecorderElements(pipeline, now, ws, callback) {
     pipeline.create('RecorderEndpoint', {
         stopOnEndOfStream: true,
         mediaProfile: 'WEBM_VIDEO_ONLY',
-        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/test-pooja-hello-world-recording.webm'
+        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/kurento-recording.webm'
     }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
@@ -473,14 +472,5 @@ function onIceCandidate(sessionId, _candidate) {
         candidatesQueue[sessionId].push(candidate);
     }
 }
-
-process.on('SIGINT', function() {
-  if(pipeline1){
-    pipeline1.release();
-    pipeline1 = null;
-  }
-  console.log("Pipeline1 released");
-  process.exit();
-});
 
 app.use(express.static(path.join(__dirname, 'static')));
