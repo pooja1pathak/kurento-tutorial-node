@@ -27,6 +27,7 @@ var https = require('https');
 var dateFormat = require('dateformat');
 var sleep = require('system-sleep');
 var pipeline;
+var pipeline1;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -198,18 +199,18 @@ function startRec(callback) {
             if (error) {
                 return callback(error);
             }
-            pipeline = p
+            pipeline1 = p
 
-            pipeline.create("PlayerEndpoint", {
+            pipeline1.create("PlayerEndpoint", {
                 uri: argv.address_uri
             }, function(error, player) {
                 if (error) return onError(error);
                 
-                now = new Date();
+                var now = new Date();
 
-                createRecorderElements(pipeline, now, ws, function(error, RecorderEndpoint) {
+                createRecorderElements(pipeline1, now, ws, function(error, RecorderEndpoint) {
                     if (error) {
-                        pipeline.release();
+                        pipeline1.release();
                         return callback(error);
                     }
                     player.connect(RecorderEndpoint, function(error) {
@@ -224,7 +225,7 @@ function startRec(callback) {
                                 if (error) return onError(error);
                                 console.log("Record");
                                 while (true) {
-                                    newTime = new Date();
+                                    var newTime = new Date();
                                     //newTime = new Date("June 20, 2019 23:59:59");
                                     var hour = newTime.getHours();
                                     var minute = newTime.getMinutes();
@@ -234,7 +235,7 @@ function startRec(callback) {
                                         if (minute == 59) {
                                             if (second == 59) {
                                                 sleep(1000);
-                                                pipeline.release();
+                                                pipeline1.release();
                                                 startRec();
                                             }
                                         }
@@ -472,5 +473,14 @@ function onIceCandidate(sessionId, _candidate) {
         candidatesQueue[sessionId].push(candidate);
     }
 }
+
+process.on('SIGINT', function() {
+  if(pipeline1){
+    pipeline1.release();
+    pipeline1 = null;
+  }
+  console.log("Pipeline1 released");
+  process.exit();
+});
 
 app.use(express.static(path.join(__dirname, 'static')));
