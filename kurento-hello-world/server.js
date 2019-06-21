@@ -492,6 +492,7 @@ process.stdin.on("keypress", function(chunk, key) {
   }
 });
 */
+process.stdin.resume();
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
