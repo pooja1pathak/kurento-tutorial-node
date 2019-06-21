@@ -506,7 +506,7 @@ process.on('SIGINT', function() {
    if (error) return onError(error);});
   //pipeline1.release();
   console.log("Pipeline1 released");
-  process.exit();
+  process.exit(0);
 });
 
 app.use(express.static(path.join(__dirname, 'static')));
