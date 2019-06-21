@@ -1,5 +1,5 @@
 {
-  "name": "kurento-client",
+  "name": "kurento-client-app",
   "description": "Kurento Browser JavaScript",
   "main": "index.html",
   "moduleType": [
