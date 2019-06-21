@@ -139,7 +139,7 @@ function onPlayOffer(error, offerSdp) {
     var message = {
         id: 'play',
         sdpOffer: offerSdp,
-        date: select_date
+        dateTime: select_date
     }
     sendMessage(message);
 }
