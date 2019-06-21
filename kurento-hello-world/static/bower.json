@@ -1,9 +1,6 @@
 {
-  "name": "kurento-hello-world",
-  "description": "Kurento Browser JavaScript Tutorial",
-  "authors": [
-    "Kurento <info@kurento.org>"
-  ],
+  "name": "kurento-client",
+  "description": "Kurento Browser JavaScript",
   "main": "index.html",
   "moduleType": [
     "globals"
