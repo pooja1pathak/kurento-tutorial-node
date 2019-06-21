@@ -136,7 +136,7 @@ wss.on('connection', function(ws) {
 
             case 'play':
                 sessionId = request.session.id;
-                play(sessionId, ws, message.sdpOffer, message.date, function(error, sdpAnswer) {
+                play(sessionId, ws, message.sdpOffer, message.dateTime, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
                             id: 'error',
