@@ -1,5 +1,5 @@
 {
-  "name": "kurento-hello-world",
+  "name": "kurento-client-app",
   "version": "6.10.1-dev",
   "private": true,
   "scripts": {
