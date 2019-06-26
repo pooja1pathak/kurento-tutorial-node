@@ -350,9 +350,12 @@ function play(sessionId, ws, sdpOffer, date, callback) {
 
             pipeline = p
 
+            var dateConverted = new Date(date);
+
+            var dateFormated =  dateFormat(dateConverted, "ddmmyyyy");
 
             pipeline.create('PlayerEndpoint', {
-                uri: 'file:///tmp/' + dateFormat(date, "ddmmyyyy") + '/kurento-recording.webm',
+                uri: 'file:///tmp/' + dateFormated + '/kurento-recording.webm',
                 useEncodedMedia: false
             }, function(error, playerEndpoint) {
 
