@@ -487,11 +487,15 @@ process.on('SIGINT', function() {
   if(pipeline1){
     pipeline1.release();
     pipeline1 = null;
+    console.log("Pipeline1 released");
   }
-  server.close();
+  server.close( function() {
+        console.log( "closed" );
+        process.exit( 0 );
+    } );
   //pipeline1.release();
-  console.log("Pipeline1 released");
-  process.exit(0);
+  
+  //process.exit(0);
 });
 
 
