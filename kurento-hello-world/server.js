@@ -488,9 +488,7 @@ process.on('SIGINT', function() {
     pipeline1.release();
     pipeline1 = null;
   }
-  server.close(() => {
-    console.log('Http server closed.');
-  });
+  server.close();
   //pipeline1.release();
   console.log("Pipeline1 released");
   process.exit(0);
