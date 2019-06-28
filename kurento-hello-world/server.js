@@ -481,4 +481,20 @@ function onIceCandidate(sessionId, _candidate) {
     }
 }
 
+process.on('SIGINT', function() {
+  //socket.close();
+  console.log("In exit");
+  if(pipeline1){
+    pipeline1.release();
+    pipeline1 = null;
+  }
+  server.close(function() {
+      console.log("Https server closed.")
+  });
+  //pipeline1.release();
+  console.log("Pipeline1 released");
+  process.exit(0);
+});
+
+
 app.use(express.static(path.join(__dirname, 'static')));
