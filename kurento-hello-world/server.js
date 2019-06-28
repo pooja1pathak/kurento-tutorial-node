@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -269,57 +269,59 @@ function start(sessionId, ws, sdpOffer, callback) {
             pipeline = p
 
             pipeline.create("PlayerEndpoint", {
-                uri: argv.address_uri
+                uri: argv.address_uri,
+                useEncodedMedia: false
             }, function(error, player) {
                 if (error) return onError(error);
 
-                createMediaElements(pipeline, ws, function(error, webRtcEndpoint) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
+                player.play(function(error) {
+                    if (error) return wsError(ws, "ERROR 4: " + error);
 
-                    connectMediaElements(webRtcEndpoint, function(error) {
+                    pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
                         if (error) {
                             pipeline.release();
                             return callback(error);
                         }
 
-                        webRtcEndpoint.on('OnIceCandidate', function(event) {
-                            var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                            ws.send(JSON.stringify({
-                                id: 'iceCandidate',
-                                candidate: candidate
-                            }));
-                        });
-
-                        webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                        player.connect(webRtcEndpoint, function(error) {
                             if (error) {
                                 pipeline.release();
                                 return callback(error);
                             }
 
-                            sessions[sessionId] = {
-                                'pipeline': pipeline,
-                                'webRtcEndpoint': webRtcEndpoint
+                            if (candidatesQueue[sessionId]) {
+                                while (candidatesQueue[sessionId].length) {
+                                    var candidate = candidatesQueue[sessionId].shift();
+                                    webRtcEndpoint.addIceCandidate(candidate);
+                                }
                             }
-                            return callback(null, sdpAnswer);
-                        });
 
-                        webRtcEndpoint.gatherCandidates(function(error) {
-                            if (error) {
-                                return callback(error);
-                            }
-                        });
+                            webRtcEndpoint.on('OnIceCandidate', function(event) {
+                                var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+                                ws.send(JSON.stringify({
+                                    id: 'iceCandidate',
+                                    candidate: candidate
+                                }));
+                            });
 
-                        player.connect(webRtcEndpoint, function(error) {
-                            if (error) return onError(error);
+                            webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
+                                if (error) {
+                                    pipeline.release();
+                                    return callback(error);
+                                }
 
-                            console.log("PlayerEndpoint-->WebRtcEndpoint connection established");
+                                sessions[sessionId] = {
+                                    'pipeline': pipeline,
+                                    'webRtcEndpoint': webRtcEndpoint,
+                                    'playerEndpoint': player
+                                }
+                                return callback(null, sdpAnswer);
+                            });
 
-                            player.play(function(error) {
-                                if (error) return onError(error);
-                                console.log("Player playing ...");
+                            webRtcEndpoint.gatherCandidates(function(error) {
+                                if (error) {
+                                    return callback(error);
+                                }
                             });
                         });
                     });
@@ -332,7 +334,7 @@ function start(sessionId, ws, sdpOffer, callback) {
 function play(sessionId, ws, sdpOffer, date, callback) {
 
     console.log("In method play")
-    console.log("date: "+ date)
+    console.log("date: " + date)
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
     }
@@ -352,7 +354,7 @@ function play(sessionId, ws, sdpOffer, date, callback) {
 
             var dateConverted = new Date(date);
 
-            var dateFormated =  dateFormat(dateConverted, "ddmmyyyy");
+            var dateFormated = dateFormat(dateConverted, "ddmmyyyy");
 
             pipeline.create('PlayerEndpoint', {
                 uri: 'file:///tmp/' + dateFormated + '/kurento-recording.webm',
@@ -362,7 +364,7 @@ function play(sessionId, ws, sdpOffer, date, callback) {
                 playerEndpoint.on('EndOfStream', function() {
                     pipeline.release();
                 });
-                
+
                 console.log('file:///tmp/' + dateFormat(date, "ddmmyyyy") + '/kurento-recording.webm')
 
                 playerEndpoint.play(function(error) {
