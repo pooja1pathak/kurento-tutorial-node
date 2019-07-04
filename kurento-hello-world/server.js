@@ -489,11 +489,14 @@ process.on('SIGINT', function() {
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
+  server.close( function() {
+      console.log( "closed" );
   server.stop( function() {
         console.log( "stopped" );
         //process.exit( 0 );
         //process.exit( 0 );
     } );
+      } );
     process.exit( 0 );
   //server.close( function() {
         //console.log( "closed" );
