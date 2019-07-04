@@ -496,7 +496,7 @@ process.on('SIGINT', function() {
         //process.exit( 0 );
     //} );
      // } );
-    //process.exit(1);
+    process.exit(-1);
   //server.close( function() {
         //console.log( "closed" );
         //process.exit( 0 );
