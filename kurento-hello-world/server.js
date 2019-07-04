@@ -491,11 +491,11 @@ process.on('SIGINT', function() {
   }
   server.close( function() {
       console.log( "closed" );
-  server.stop( function() {
-        console.log( "stopped" );
+  //server.stop( function() {
+        //console.log( "stopped" );
         //process.exit( 0 );
         //process.exit( 0 );
-    } );
+    //} );
       } );
     process.exit( 0 );
   //server.close( function() {
