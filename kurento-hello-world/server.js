@@ -484,7 +484,7 @@ function onIceCandidate(sessionId, _candidate) {
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
-  wss.close();
+  wss.stop();
   if(pipeline1){
     pipeline1.release();
     pipeline1 = null;
