@@ -485,7 +485,7 @@ process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
     //server.close();
-      server.close(() => {
+      server.stop(() => {
     console.log('Http server closed.');
     // boolean means [force], see in mongoose doc
     if(pipeline1){
