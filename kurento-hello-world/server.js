@@ -484,12 +484,22 @@ function onIceCandidate(sessionId, _candidate) {
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
-    server.stop();
-  if(pipeline1){
+    //server.close();
+      server.close(() => {
+    console.log('Http server closed.');
+    // boolean means [force], see in mongoose doc
+    if(pipeline1){
     pipeline1.release();
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
+      process.exit(0);
+  });
+  //if(pipeline1){
+    //pipeline1.release();
+    //pipeline1 = null;
+    //console.log("Pipeline1 released");
+  //}
   //server.close();
   //server.stop( function() {
         //console.log( "stopped" );
@@ -497,7 +507,7 @@ process.on('SIGINT', function() {
         //process.exit( 0 );
     //} );
      // } );
-    process.exit(0);
+    //process.exit(0);
   //server.close( function() {
         //console.log( "closed" );
         //process.exit( 0 );
