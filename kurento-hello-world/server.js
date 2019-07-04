@@ -491,12 +491,13 @@ process.on('SIGINT', function() {
   }
   server.stop( function() {
         console.log( "stopped" );
+        process.exit( 0 );
         //process.exit( 0 );
     } );
-  server.close( function() {
-        console.log( "closed" );
-        process.exit( 0 );
-    } );
+  //server.close( function() {
+        //console.log( "closed" );
+        //process.exit( 0 );
+    //} );
   //pipeline1.release();
   
   //process.exit(0);
