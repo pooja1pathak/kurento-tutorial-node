@@ -484,12 +484,13 @@ function onIceCandidate(sessionId, _candidate) {
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
+    server.close();
   if(pipeline1){
     pipeline1.release();
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
-  server.close();
+  //server.close();
   //server.stop( function() {
         //console.log( "stopped" );
         //process.exit( 0 );
