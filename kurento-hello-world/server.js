@@ -523,5 +523,6 @@ process.on('SIGTERM', () => {
   server.close(() => {
     console.log('Process terminated')
   });
+});
 
 app.use(express.static(path.join(__dirname, 'static')));
