@@ -491,34 +491,7 @@ process.on('SIGINT', function() {
     console.log("Pipeline1 released");
   }
   process.kill(process.pid, "SIGTERM");
-  //server.close();
-  //server.stop( function() {
-        //console.log( "stopped" );
-        //process.exit( 0 );
-        //process.exit( 0 );
-    //} );
-     // } );
-  //process.exit(0);
-  //server.close( function() {
-        //console.log( "closed" );
-        //process.exit( 0 );
-    //} );
-  //pipeline1.release();
-  
-  //process.exit(0);
 });
-
-/*
-process.on("SIGINT", () => {
-     closeConnections(),
-    .catch((error: any) => {
-        console.error(error);
-    })
-    .then(() => {
-        process.kill(process.pid, "SIGTERM");
-    });
-});
-*/
 process.on('SIGTERM', () => {
   console.log("In SIGTERM");
   if(pipeline1){
@@ -532,7 +505,6 @@ process.on('SIGTERM', () => {
   });
 });
 process.once('SIGINT', function () {
-  console.log("In once");
   proc.kill('SIGINT');
 });
 app.use(express.static(path.join(__dirname, 'static')));
