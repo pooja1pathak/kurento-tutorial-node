@@ -520,9 +520,20 @@ process.on("SIGINT", () => {
 });
 */
 process.on('SIGTERM', () => {
+  console.log("In SIGTERM");
+  if(pipeline1){
+    pipeline1.release();
+    pipeline1 = null;
+    console.log("Pipeline1 released");
+  }
   server.close(() => {
     console.log('Process terminated')
   });
+});
+
+process.once('SIGINT', function () {
+  console.log("In once");
+  proc.kill('SIGINT');
 });
 
 app.use(express.static(path.join(__dirname, 'static')));
