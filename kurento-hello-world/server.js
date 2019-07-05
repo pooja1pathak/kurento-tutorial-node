@@ -526,8 +526,9 @@ process.on('SIGTERM', () => {
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
-  server.destroy(() => {
+  server.close(() => {
     console.log('Process terminated')
+    process.exit(0);
   });
 });
 process.once('SIGINT', function () {
