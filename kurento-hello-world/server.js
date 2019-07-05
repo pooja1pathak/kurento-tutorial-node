@@ -526,7 +526,7 @@ process.on('SIGTERM', () => {
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
-  server.close(() => {
+  server.destroy(() => {
     console.log('Process terminated')
   });
 });
