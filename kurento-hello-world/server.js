@@ -528,14 +528,10 @@ process.on('SIGTERM', () => {
   }
   server.close(() => {
     console.log('Process terminated')
-    process.kill(process.pid, "SIGTERM");
   });
 });
-/*
 process.once('SIGINT', function () {
   console.log("In once");
   proc.kill('SIGINT');
-  process.kill(process.pid, "SIGTERM");
 });
-*/
 app.use(express.static(path.join(__dirname, 'static')));
