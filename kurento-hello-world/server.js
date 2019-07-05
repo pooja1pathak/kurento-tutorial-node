@@ -507,4 +507,17 @@ process.on('SIGTERM', () => {
 process.once('SIGINT', function () {
   proc.kill('SIGINT');
 });
+
+process.on('SIGHUP', function() {
+  //socket.close();
+  console.log("In SIGHUP");
+    
+  if(pipeline1){
+    pipeline1.release();
+    pipeline1 = null;
+    console.log("Pipeline1 released");
+  }
+  process.kill(process.pid, "SIGTERM");
+});
+
 app.use(express.static(path.join(__dirname, 'static')));
