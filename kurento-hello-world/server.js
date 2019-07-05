@@ -480,7 +480,7 @@ function onIceCandidate(sessionId, _candidate) {
         candidatesQueue[sessionId].push(candidate);
     }
 }
-
+/*
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
@@ -506,6 +506,16 @@ process.on('SIGINT', function() {
   
   //process.exit(0);
 });
+*/
 
+process.on("SIGINT", () => {
+     closeConnections(),
+    .catch((error: any) => {
+        console.error(error);
+    })
+    .then(() => {
+        process.kill(process.pid, "SIGTERM");
+    });
+});
 
 app.use(express.static(path.join(__dirname, 'static')));
