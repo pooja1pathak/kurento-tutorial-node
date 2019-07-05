@@ -480,16 +480,17 @@ function onIceCandidate(sessionId, _candidate) {
         candidatesQueue[sessionId].push(candidate);
     }
 }
-/*
+
 process.on('SIGINT', function() {
   //socket.close();
   console.log("In exit");
-  wss.end();
+    
   if(pipeline1){
     pipeline1.release();
     pipeline1 = null;
     console.log("Pipeline1 released");
   }
+  process.kill(process.pid, "SIGTERM");
   //server.close();
   //server.stop( function() {
         //console.log( "stopped" );
@@ -497,7 +498,7 @@ process.on('SIGINT', function() {
         //process.exit( 0 );
     //} );
      // } );
-  process.exit(0);
+  //process.exit(0);
   //server.close( function() {
         //console.log( "closed" );
         //process.exit( 0 );
@@ -506,8 +507,8 @@ process.on('SIGINT', function() {
   
   //process.exit(0);
 });
-*/
 
+/*
 process.on("SIGINT", () => {
      closeConnections(),
     .catch((error: any) => {
@@ -517,5 +518,10 @@ process.on("SIGINT", () => {
         process.kill(process.pid, "SIGTERM");
     });
 });
+*/
+process.on('SIGTERM', () => {
+  server.close(() => {
+    console.log('Process terminated')
+  })
 
 app.use(express.static(path.join(__dirname, 'static')));
