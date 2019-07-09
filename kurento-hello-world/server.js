@@ -120,6 +120,7 @@ wss.on('connection', function(ws) {
         switch (message.id) {
             case 'start':
                 sessionId = request.session.id;
+                console.log("In case start cam_id : " + message.cam_id)
                 start(sessionId, ws, message.sdpOffer, message.cam_id, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
@@ -255,9 +256,11 @@ function startRec(callback) {
 function start(sessionId, ws, sdpOffer, cam_id, callback) {
     
     if (cam_id == 'Camera_01'){
+        console.log("Camera_01");
         argv.address_uri = 'rtsp://180.179.214.168:8051/test1.sdp'
     }
     else if (cam_id == 'Camera_02'){
+        console.log("Camera_02");
         argv.address_uri = 'rtsp://121.241.105.102:8051/test1.sdp'
     }
     
