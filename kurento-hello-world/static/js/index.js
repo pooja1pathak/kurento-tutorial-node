@@ -122,11 +122,15 @@ function onIceCandidate(candidate) {
 
 function onOffer(error, offerSdp) {
     if (error) return onError(error);
+    
+    var cam_id1 = 'Camera_01'
+    var cam_id2 = 'Camera_02'
 
     console.info('Invoking SDP offer callback function ' + location.host);
     var message = {
         id: 'start',
-        sdpOffer: offerSdp
+        sdpOffer: offerSdp,
+        cam_id: cam_id1
     }
     sendMessage(message);
 }
