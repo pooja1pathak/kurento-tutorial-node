@@ -257,7 +257,7 @@ function start(sessionId, ws, sdpOffer, cam_id, callback) {
     if (cam_id == 'Camera_01'){
         argv.address_uri = 'rtsp://180.179.214.168:8051/test1.sdp'
     }
-    else if (cam_id == 'Camera_01'){
+    else if (cam_id == 'Camera_02'){
         argv.address_uri = 'rtsp://121.241.105.102:8051/test1.sdp'
     }
     
