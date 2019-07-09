@@ -69,8 +69,7 @@ function start() {
 
     // Disable start button
     setState(I_AM_STARTING);
-    showSpinner(videoOutput);
-    showSpinner(videoOutput2);
+    showSpinner(videoOutput, videoOutput2);
 
     console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
@@ -178,8 +177,7 @@ function stop() {
         }
         sendMessage(message);
     }
-    hideSpinner(videoOutput);
-    hideSpinner(videoOutput2);
+    hideSpinner(videoOutput, videoOutput2);
 }
 
 function setState(nextState) {
