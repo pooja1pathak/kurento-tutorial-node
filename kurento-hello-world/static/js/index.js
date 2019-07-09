@@ -69,19 +69,45 @@ function start() {
 
     // Disable start button
     setState(I_AM_STARTING);
-    showSpinner(videoOutput, videoOutput2);
+    showSpinner(videoOutput);
 
     console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
         remoteVideo: videoOutput,
-        remoteVideo2: videoOutput2,
         onicecandidate: onIceCandidate
     }
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if (error) return onError(error);
         this.generateOffer(onOffer);
+
+        webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event) {
+            if (webRtcPeer && webRtcPeer.peerConnection) {
+                console.log("oniceconnectionstatechange -> " + webRtcPeer.peerConnection.iceConnectionState);
+                console.log('icegatheringstate -> ' + webRtcPeer.peerConnection.iceGatheringState);
+            }
+        });
+    });
+}
+
+function start2() {
+    console.log('Starting video call ...')
+
+    // Disable start button
+    setState(I_AM_STARTING);
+    showSpinner(videoOutput2);
+
+    console.log('Creating WebRtcPeer and generating local sdp offer ...');
+
+    var options = {
+        remoteVideo: videoOutput2,
+        onicecandidate: onIceCandidate
+    }
+
+    webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
+        if (error) return onError(error);
+        this.generateOffer(onOffer2);
 
         webRtcPeer.peerConnection.addEventListener('iceconnectionstatechange', function(event) {
             if (webRtcPeer && webRtcPeer.peerConnection) {
@@ -125,6 +151,21 @@ function onOffer(error, offerSdp) {
     if (error) return onError(error);
     
     var cam_id1 = 'Camera_01'
+    //var cam_id2 = 'Camera_02'
+
+    console.info('Invoking SDP offer callback function ' + location.host);
+    var message = {
+        id: 'start',
+        sdpOffer: offerSdp,
+        cam_id: cam_id1
+    }
+    sendMessage(message);
+}
+
+function onOffer2(error, offerSdp) {
+    if (error) return onError(error);
+    
+    //var cam_id1 = 'Camera_01'
     var cam_id2 = 'Camera_02'
 
     console.info('Invoking SDP offer callback function ' + location.host);
@@ -135,6 +176,7 @@ function onOffer(error, offerSdp) {
     }
     sendMessage(message);
 }
+
 
 function onPlayOffer(error, offerSdp) {
     if (error) return onError(error);
