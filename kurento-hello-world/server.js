@@ -252,7 +252,7 @@ function startRec(callback) {
     });
 }
 
-function start(sessionId, ws, sdpOffer, callback) {
+function start(sessionId, ws, sdpOffer, cam_id, callback) {
     
     if (cam_id == 'Camera_01'){
         argv.address_uri = 'rtsp://180.179.214.168:8051/test1.sdp'
