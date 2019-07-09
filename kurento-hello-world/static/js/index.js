@@ -15,7 +15,7 @@
  *
  */
 var ws = new WebSocket('wss://' + location.host + '/kurento');
-var videoInput;
+var videoOutput2;
 var videoOutput;
 var webRtcPeer;
 var state = null;
@@ -27,7 +27,7 @@ const I_AM_STARTING = 2;
 window.onload = function() {
     console = new Console();
     console.log('Page loaded ...');
-    videoInput = document.getElementById('videoInput');
+    videoOutput2 = document.getElementById('videoOutput2');
     videoOutput = document.getElementById('videoOutput');
     setState(I_CAN_START);
 }
@@ -70,11 +70,13 @@ function start() {
     // Disable start button
     setState(I_AM_STARTING);
     showSpinner(videoOutput);
+    showSpinner(videoOutput2);
 
     console.log('Creating WebRtcPeer and generating local sdp offer ...');
 
     var options = {
         remoteVideo: videoOutput,
+        remoteVideo2: videoOutput2,
         onicecandidate: onIceCandidate
     }
 
@@ -177,6 +179,7 @@ function stop() {
         sendMessage(message);
     }
     hideSpinner(videoOutput);
+    hideSpinner(videoOutput2);
 }
 
 function setState(nextState) {
