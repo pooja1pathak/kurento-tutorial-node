@@ -120,7 +120,7 @@ wss.on('connection', function(ws) {
         switch (message.id) {
             case 'start':
                 sessionId = request.session.id;
-                start(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                start(sessionId, ws, message.sdpOffer, message.cam_id, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
                             id: 'error',
@@ -252,7 +252,14 @@ function startRec(callback) {
     });
 }
 
-function start(sessionId, ws, sdpOffer, callback) {
+function start(sessionId, ws, sdpOffer, cam_id, callback) {
+    
+    if (cam_id == 'Camera_01'){
+        argv.address_uri = 'rtsp://180.179.214.168:8051/test1.sdp'
+    }
+    else if (cam_id == 'Camera_01'){
+        argv.address_uri = 'rtsp://121.241.105.102:8051/test1.sdp'
+    }
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
     }
