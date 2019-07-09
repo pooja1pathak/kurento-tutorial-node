@@ -130,7 +130,7 @@ function onOffer(error, offerSdp) {
     var message = {
         id: 'start',
         sdpOffer: offerSdp,
-        cam_id: cam_id1
+        cam_id: cam_id2
     }
     sendMessage(message);
 }
