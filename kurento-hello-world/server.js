@@ -34,7 +34,7 @@ var argv = minimist(process.argv.slice(2), {
         as_uri: 'https://localhost:8080/',
         ws_uri: 'ws://localhost:8888/kurento',
         file_uri: 'file:///tmp/test-pooja-hello-world-recording.webm',
-        address_uri: 'rtsp://180.179.214.151:8051/test1.sdp',
+        address_uri: 'rtsp://180.179.214.168:8051/test1.sdp',
         //address_uri: 'rtsp://172.30.72.127:8051/test1.sdp',
     }
 });
@@ -120,7 +120,7 @@ wss.on('connection', function(ws) {
         switch (message.id) {
             case 'start':
                 sessionId = request.session.id;
-                start(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                start(sessionId, ws, message.sdpOffer, message.cam_id, function(error, sdpAnswer) {
                     if (error) {
                         return ws.send(JSON.stringify({
                             id: 'error',
@@ -253,6 +253,14 @@ function startRec(callback) {
 }
 
 function start(sessionId, ws, sdpOffer, callback) {
+    
+    if (cam_id == 'Camera_01'){
+        argv.address_uri = 'rtsp://180.179.214.168:8051/test1.sdp'
+    }
+    else if (cam_id == 'Camera_01'){
+        argv.address_uri = 'rtsp://121.241.105.102:8051/test1.sdp'
+    }
+    
     if (!sessionId) {
         return callback('Cannot use undefined sessionId');
     }
