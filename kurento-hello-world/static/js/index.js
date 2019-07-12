@@ -66,12 +66,14 @@ ws.onmessage = function(message) {
 }
 
 function start(){
+    console.log("in start mysql: "+ mysql);
     var con = mysql.createConnection({
         host: "180.179.214.195",
         user: "root",
         password: "abc1234",
         database: "db_kurento"
     });
+    console.log("before connect");
     con.connect(function(err) {
         if (err) throw err;
         con.query("SELECT * FROM test_db", function (err, result, fields) {
