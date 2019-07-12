@@ -117,6 +117,17 @@ con.connect(function(err) {
     
     });
 
+con.connect(function(err) {
+        if (err) throw err;
+for (i=0; i<count; i++){
+        console.log("in for");
+        con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result[i].cam_addr);
+        });
+        }       
+        });
+
 startRec(function(error) {
     if (error) {
         console.log('Recording error');
