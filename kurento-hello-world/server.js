@@ -104,15 +104,15 @@ con.connect(function(err) {
             count = parseInt(tmp.slice(13, -2), 10);
             console.log("count: "+ count);
             console.log(typeof count)
-         /*   
-            var i;
-    for (i=0; i<count; i++){
-        console.log("in for");
+            
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result[i].cam_addr);
+            console.log(result[0].cam_addr);
+            cam_ids.push(result[0].cam_id);
+            cam_addresses.push(result[0].cam_addresses);
+            console.log("cam_ids: " + cam_ids);
+            console.log("cam_addresses: " + cam_addresses);
         });
-        }   */    
         });
     
     });
