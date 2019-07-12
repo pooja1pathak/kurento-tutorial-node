@@ -21,7 +21,6 @@
     "ekko-lightbox": "~3.3.0",
     "demo-console": "1.5.1",
     "kurento-utils": "master",
-    "mysql": "~2.17.1",
     "kurento-client": "master"
   }
 }
