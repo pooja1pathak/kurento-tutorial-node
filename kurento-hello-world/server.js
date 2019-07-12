@@ -109,7 +109,7 @@ con.connect(function(err) {
             if (err) throw err;
             console.log(result[0].cam_addr);
             cam_ids.push(result[0].cam_id);
-            cam_addresses.push(result[0].cam_addresses);
+            cam_addresses.push(result[0].cam_addr);
             console.log("cam_ids: " + cam_ids);
             console.log("cam_addresses: " + cam_addresses);
         });
