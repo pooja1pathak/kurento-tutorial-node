@@ -97,8 +97,8 @@ con.connect(function(err) {
         if (err) throw err;
         con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result[]);
-            var tmp = result[];
+            console.log(result);
+            var tmp = result;
             count = tmp.slice(27);
             count.trim();
             console.log("count: " + count);
