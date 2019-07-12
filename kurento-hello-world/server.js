@@ -100,7 +100,7 @@ con.connect(function(err) {
             if (err) throw err;
             //console.log(result);
             var tmp = JSON.stringify(result);
-            count = tmp.slice(13, -2);
+            count = parseInt(tmp.slice(13, -2));
             console.log("count: "+ count);
             console.log(typeof count)
         });
