@@ -31,6 +31,7 @@ var pipeline;
 var pipeline1;
 var cam_ids = [];
 var cam_addresses = [];
+var count;
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -92,18 +93,18 @@ var con = mysql.createConnection({
         password: "abc1234",
         database: "db_kurento"
     });
-var count;
+
 con.connect(function(err) {
         if (err) throw err;
         con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
             if (err) throw err;
             //console.log(result);
             var tmp = JSON.stringify(result);
-            var count = tmp.slice(13, -2);
-            //count = count.trim();
-            //console.log("count: " + obj["COUNT(*)"]);
+            count = tmp.slice(13, -2);
             console.log("count: "+ count);
+            console.log(typeof count)
         });
+    for (var i = 0)
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
             console.log(result[0].cam_addr);
