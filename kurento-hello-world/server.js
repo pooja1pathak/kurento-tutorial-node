@@ -104,6 +104,7 @@ con.connect(function(err) {
             console.log("count: "+ count);
             console.log(typeof count)
         });
+    console.log("hereeeeeeeeeeeee")
     for (var i = 0; i<count; i++){
         console.log("in for");
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
