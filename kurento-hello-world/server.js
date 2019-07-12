@@ -102,7 +102,8 @@ con.connect(function(err) {
             //var tmp = JSON.stringify(result);
             count = tmp.slice(27);
             //count = count.trim();
-            console.log("count: " + obj["COUNT(*)"]);
+            //console.log("count: " + obj["COUNT(*)"]);
+            console.log("obj: "+ obj);
         });
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
