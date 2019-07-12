@@ -15,7 +15,6 @@
  *
  */
 var ws = new WebSocket('wss://' + location.host + '/kurento');
-var mysql = require('mysql');
 var videoOutput2;
 var videoOutput;
 var webRtcPeer;
