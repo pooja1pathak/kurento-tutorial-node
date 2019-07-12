@@ -94,7 +94,7 @@ con.connect(function(err) {
         if (err) throw err;
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result);
+            console.log(result[1].cam_id);
         });
     });
 
