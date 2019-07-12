@@ -98,12 +98,11 @@ con.connect(function(err) {
         con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
             if (err) throw err;
             //console.log(result);
-            var obj = JSON.parse(result);
-            //var tmp = JSON.stringify(result);
+            var tmp = JSON.stringify(result);
             count = tmp.slice(27);
             //count = count.trim();
             //console.log("count: " + obj["COUNT(*)"]);
-            console.log("obj: "+ obj);
+            console.log("count: "+ count);
         });
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
