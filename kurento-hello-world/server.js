@@ -104,8 +104,8 @@ con.connect(function(err) {
             count = parseInt(tmp.slice(13, -2), 10);
             console.log("count: "+ count);
             console.log(typeof count)
-        });
-    var i;
+            
+            var i;
     for (i=0; i<2; i++){
         console.log("in for");
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
@@ -113,6 +113,10 @@ con.connect(function(err) {
             console.log(result[i]);
         });
     }
+            
+            
+        });
+    
     });
 
 startRec(function(error) {
