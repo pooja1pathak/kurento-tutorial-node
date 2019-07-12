@@ -15,7 +15,8 @@
     "deasync": "~0.1.15",
     "system-sleep": "~1.3.6",
     "kurento-client": "Kurento/kurento-client-js",
-    "kurento-utils": "Kurento/kurento-utils-js"
+    "kurento-utils": "Kurento/kurento-utils-js",
+    "mysql": "~2.17.1"
   },
   "devDependencies": {
     "bower": "^1.4.1"
