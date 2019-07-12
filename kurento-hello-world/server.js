@@ -96,7 +96,7 @@ con.connect(function(err) {
         if (err) throw err;
         con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result[0].COUNT(*));
+            console.log(result[0].'COUNT(*)');
         });
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
