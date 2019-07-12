@@ -15,6 +15,7 @@
  *
  */
 var ws = new WebSocket('wss://' + location.host + '/kurento');
+var mysql = require('mysql');
 var videoOutput2;
 var videoOutput;
 var webRtcPeer;
@@ -64,7 +65,23 @@ ws.onmessage = function(message) {
     }
 }
 
-function start() {
+function start(){
+    var con = mysql.createConnection({
+        host: "180.179.214.195",
+        user: "root",
+        password: "abc1234",
+        database: "db_kurento"
+    });
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query("SELECT * FROM test_db", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        });
+    });
+}
+
+function start1() {
     console.log('Starting video call ...')
 
     // Disable start button
