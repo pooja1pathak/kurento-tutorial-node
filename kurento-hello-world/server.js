@@ -92,7 +92,7 @@ var con = mysql.createConnection({
     });
 con.connect(function(err) {
         if (err) throw err;
-        con.query("SELECT * FROM test_db", function (err, result, fields) {
+        con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
             console.log(result);
         });
