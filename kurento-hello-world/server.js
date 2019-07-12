@@ -29,6 +29,8 @@ var dateFormat = require('dateformat');
 var sleep = require('system-sleep');
 var pipeline;
 var pipeline1;
+var cam_ids = [];
+var cam_addresses = [];
 
 var argv = minimist(process.argv.slice(2), {
     default: {
@@ -92,6 +94,10 @@ var con = mysql.createConnection({
     });
 con.connect(function(err) {
         if (err) throw err;
+        con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        });
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
             console.log(result[0].cam_addr);
