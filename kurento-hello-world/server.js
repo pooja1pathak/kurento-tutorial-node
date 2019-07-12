@@ -89,6 +89,12 @@ startRec(function(error) {
     };
 });
 
+getData(function error) {
+        if (error) {
+        console.log('Data error');
+    };
+});
+ 
 /*
  * Management of WebSocket messages
  */
@@ -194,6 +200,24 @@ function getKurentoClient(callback) {
     });
 }
 
+function getData(callback) {
+       
+    console.log("in start mysql: "+ mysql);
+    var con = mysql.createConnection({
+        host: "180.179.214.195",
+        user: "root",
+        password: "abc1234",
+        database: "db_kurento"
+    });
+    console.log("before connect");
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query("SELECT * FROM test_db", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        });
+    });
+}
 function startRec(callback) {
     getKurentoClient(function(error, kurentoClient) {
         if (error) {
@@ -255,22 +279,6 @@ function startRec(callback) {
 }
 
 function start(sessionId, ws, sdpOffer, cam_id, callback) {
-    
-    console.log("in start mysql: "+ mysql);
-    var con = mysql.createConnection({
-        host: "180.179.214.195",
-        user: "root",
-        password: "abc1234",
-        database: "db_kurento"
-    });
-    console.log("before connect");
-    con.connect(function(err) {
-        if (err) throw err;
-        con.query("SELECT * FROM test_db", function (err, result, fields) {
-            if (err) throw err;
-            console.log(result);
-        });
-    });
     
     if (cam_id == 'Camera_01'){
         console.log("Camera_01");
