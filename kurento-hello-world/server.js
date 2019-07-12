@@ -84,7 +84,8 @@ var wss = new ws.Server({
 });
 
 var con = mysql.createConnection({
-        host: "180.179.214.195",
+        //host: "180.179.214.195",
+        host: "localhost",
         user: "root",
         password: "abc1234",
         database: "db_kurento"
