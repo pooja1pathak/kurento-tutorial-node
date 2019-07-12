@@ -91,7 +91,8 @@ var con = mysql.createConnection({
         host: "localhost",
         user: "root",
         password: "abc1234",
-        database: "db_kurento"
+        database: "db_kurento",
+        multipleStatements: true
     });
 
 con.connect(function(err) {
@@ -104,8 +105,8 @@ con.connect(function(err) {
             console.log("count: "+ count);
             console.log(typeof count)
         });
-    console.log("hereeeeeeeeeeeee")
-    for (var i = 0; i<count; i++){
+    var i;
+    for (i=0; i<count; i++){
         console.log("in for");
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
