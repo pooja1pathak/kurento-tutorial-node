@@ -106,13 +106,13 @@ con.connect(function(err) {
             console.log(typeof count)
             
             var i;
-    //for (i=0; i<2; i++){
+    for (i=0; i<2; i++){
         console.log("in for");
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result[0].cam_addr);
+            console.log(result[i].cam_addr);
         });
-        //}       
+        }       
         });
     
     });
