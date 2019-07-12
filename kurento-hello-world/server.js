@@ -104,7 +104,7 @@ con.connect(function(err) {
             console.log("count: "+ count);
             console.log(typeof count)
         });
-    for (var i = 0)
+    //for (var i = 0)
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
             console.log(result[0].cam_addr);
