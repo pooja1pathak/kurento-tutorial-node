@@ -100,7 +100,7 @@ con.connect(function(err) {
             console.log(result);
             var tmp = result;
             count = tmp.slice(27);
-            count.trim();
+            count = count.trim();
             console.log("count: " + count);
         });
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
