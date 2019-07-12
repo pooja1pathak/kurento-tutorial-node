@@ -83,17 +83,26 @@ var wss = new ws.Server({
     path: '/kurento'
 });
 
+var con = mysql.createConnection({
+        host: "180.179.214.195",
+        user: "root",
+        password: "abc1234",
+        database: "db_kurento"
+    });
+con.connect(function(err) {
+        if (err) throw err;
+        con.query("SELECT * FROM test_db", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        });
+    });
+
 startRec(function(error) {
     if (error) {
         console.log('Recording error');
     };
 });
 
-getData(function error) {
-        if (error) {
-        console.log('Data error');
-    };
-});
  
 /*
  * Management of WebSocket messages
@@ -199,7 +208,7 @@ function getKurentoClient(callback) {
         callback(null, kurentoClient);
     });
 }
-
+/*
 function getData(callback) {
        
     console.log("in start mysql: "+ mysql);
@@ -218,6 +227,7 @@ function getData(callback) {
         });
     });
 }
+*/
 function startRec(callback) {
     getKurentoClient(function(error, kurentoClient) {
         if (error) {
