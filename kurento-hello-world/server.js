@@ -104,7 +104,7 @@ con.connect(function(err) {
             count = parseInt(tmp.slice(13, -2), 10);
             console.log("count: "+ count);
             console.log(typeof count)
-            
+         /*   
             var i;
     for (i=0; i<count; i++){
         console.log("in for");
@@ -112,7 +112,7 @@ con.connect(function(err) {
             if (err) throw err;
             console.log(result[i].cam_addr);
         });
-        }       
+        }   */    
         });
     
     });
