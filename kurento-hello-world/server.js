@@ -98,7 +98,7 @@ con.connect(function(err) {
         con.query("SELECT COUNT(*) FROM test_db", function (err, result, fields) {
             if (err) throw err;
             console.log(result);
-            var tmp = result;
+            var tmp = JSON.stringify(result);
             count = tmp.slice(27);
             //count = count.trim();
             console.log("count: " + tmp);
