@@ -110,7 +110,7 @@ con.connect(function(err) {
         console.log("in for");
         con.query("SELECT cam_id, cam_addr FROM test_db", function (err, result, fields) {
             if (err) throw err;
-            console.log(result[i].cam_addr);
+            console.log(result[i].cam_id);
         });
     }
     });
