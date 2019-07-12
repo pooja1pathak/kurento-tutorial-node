@@ -99,7 +99,7 @@ con.connect(function(err) {
             if (err) throw err;
             //console.log(result);
             var tmp = JSON.stringify(result);
-            count = tmp.slice(27);
+            count = tmp.slice(13);
             //count = count.trim();
             //console.log("count: " + obj["COUNT(*)"]);
             console.log("count: "+ count);
