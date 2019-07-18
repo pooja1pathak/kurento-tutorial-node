@@ -437,7 +437,7 @@ function createRecorderElements(pipeline, now, ws, callback) {
     pipeline.create('RecorderEndpoint', {
         stopOnEndOfStream: true,
         mediaProfile: 'WEBM_VIDEO_ONLY',
-        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/kurento-recording.webm'
+        uri: 'file:///tmp/' + dateFormat(now, "ddmmyyyy") + '/kurento-recording.webm' + now.getHours() + now.getMinutes()
     }, function(error, RecorderEndpoint) {
         if (error) {
             return callback(error);
